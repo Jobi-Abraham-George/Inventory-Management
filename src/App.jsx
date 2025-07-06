@@ -136,10 +136,10 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <div className="text-lg font-medium text-gray-700">Loading inventory...</div>
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-3"></div>
+          <div className="text-sm font-medium text-gray-700">Loading inventory...</div>
         </div>
       </div>
     );
@@ -147,63 +147,63 @@ export default function App() {
 
   if (!inventory) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-6xl mb-4">😞</div>
-          <div className="text-xl font-semibold text-red-600">Failed to load inventory data</div>
-          <div className="text-gray-600 mt-2">Please refresh the page and try again</div>
+          <div className="text-4xl mb-3">�</div>
+          <div className="text-lg font-semibold text-red-600">Failed to load inventory data</div>
+          <div className="text-sm text-gray-600 mt-1">Please refresh the page and try again</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <div className="bg-white shadow-lg border-b border-gray-200">
+    <div className="min-h-screen bg-gray-50">
+      {/* Professional Header */}
+      <div className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">📦</span>
+                <div className="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">📦</span>
                 </div>
               </div>
-              <div className="ml-4">
-                <h1 className="text-3xl font-bold text-gray-900">Inventory Manager</h1>
-                <p className="text-gray-600">Professional restaurant supply management</p>
+              <div className="ml-3">
+                <h1 className="text-xl font-semibold text-gray-900">Inventory Management</h1>
+                <p className="text-xs text-gray-500">Restaurant Supply Chain System</p>
               </div>
             </div>
             
-            {/* Stats */}
-            <div className="hidden md:flex space-x-6">
+            {/* Compact Stats Dashboard */}
+            <div className="hidden md:flex items-center space-x-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600">{Object.keys(inventory).length}</div>
-                <div className="text-sm text-gray-600">Suppliers</div>
+                <div className="text-lg font-semibold text-gray-900">{Object.keys(inventory).length}</div>
+                <div className="text-xs text-gray-500">Suppliers</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{getTotalItems()}</div>
-                <div className="text-sm text-gray-600">Items</div>
+                <div className="text-lg font-semibold text-gray-900">{getTotalItems()}</div>
+                <div className="text-xs text-gray-500">Items</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{getTotalOnHandStock()}</div>
-                <div className="text-sm text-gray-600">On Hand</div>
+                <div className="text-lg font-semibold text-blue-600">{getTotalOnHandStock()}</div>
+                <div className="text-xs text-gray-500">On Hand</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-indigo-600">{getTotalBuildQty()}</div>
-                <div className="text-sm text-gray-600">To Build</div>
+                <div className="text-lg font-semibold text-green-600">{getTotalBuildQty()}</div>
+                <div className="text-xs text-gray-500">To Build</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-teal-600">{getTotalOrderQty()}</div>
-                <div className="text-sm text-gray-600">To Order</div>
+                <div className="text-lg font-semibold text-purple-600">{getTotalOrderQty()}</div>
+                <div className="text-xs text-gray-500">To Order</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-orange-600">{getLowStockItems()}</div>
-                <div className="text-sm text-gray-600">Low Stock</div>
+                <div className="text-lg font-semibold text-orange-600">{getLowStockItems()}</div>
+                <div className="text-xs text-gray-500">Low Stock</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-red-600">{getOutOfStockItems()}</div>
-                <div className="text-sm text-gray-600">Out of Stock</div>
+                <div className="text-lg font-semibold text-red-600">{getOutOfStockItems()}</div>
+                <div className="text-xs text-gray-500">Out of Stock</div>
               </div>
             </div>
           </div>
@@ -211,108 +211,87 @@ export default function App() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Error Alert */}
         {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
+          <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-3 flex items-center justify-between">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <span className="text-red-500 text-xl">⚠️</span>
+                <span className="text-red-500 text-sm">⚠️</span>
               </div>
-              <div className="ml-3">
-                <p className="text-red-800 font-medium">{error}</p>
+              <div className="ml-2">
+                <p className="text-red-800 text-sm font-medium">{error}</p>
               </div>
             </div>
             <button 
               onClick={() => setError(null)}
-              className="text-red-500 hover:text-red-700 font-medium text-sm"
+              className="text-red-500 hover:text-red-700 font-medium text-xs"
             >
               Dismiss
             </button>
           </div>
         )}
 
-        {/* Field Explanations Legend */}
-        <div className="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-            <span className="text-blue-600 mr-2">ℹ️</span>
-            Field Explanations
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="flex items-start space-x-3">
-              <span className="text-xl">📊</span>
-              <div>
-                <div className="font-semibold text-gray-900">On Hand Qty</div>
-                <div className="text-sm text-gray-600">Current stock quantity in your inventory</div>
-              </div>
+        {/* Compact Field Legend */}
+        <div className="mb-4 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">Field Reference</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <span className="text-gray-700"><strong>On Hand:</strong> Current stock</span>
             </div>
-            <div className="flex items-start space-x-3">
-              <span className="text-xl">🔨</span>
-              <div>
-                <div className="font-semibold text-gray-900">Build Qty</div>
-                <div className="text-sm text-gray-600">Quantities you need to build/produce</div>
-              </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-gray-700"><strong>Build:</strong> Production needed</span>
             </div>
-            <div className="flex items-start space-x-3">
-              <span className="text-xl">📦</span>
-              <div>
-                <div className="font-semibold text-gray-900">Order Qty</div>
-                <div className="text-sm text-gray-600">Quantities you need to order from suppliers</div>
-              </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <span className="text-gray-700"><strong>Order:</strong> Purchase needed</span>
             </div>
-            <div className="flex items-start space-x-3">
-              <span className="text-xl">📏</span>
-              <div>
-                <div className="font-semibold text-gray-900">UOM</div>
-                <div className="text-sm text-gray-600">Unit of Measure (pieces, lbs, gallons, bottles, etc.)</div>
-              </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
+              <span className="text-gray-700"><strong>UOM:</strong> Unit of measure</span>
             </div>
-            <div className="flex items-start space-x-3">
-              <span className="text-xl">📁</span>
-              <div>
-                <div className="font-semibold text-gray-900">Case Qty</div>
-                <div className="text-sm text-gray-600">Case quantities for packaging/ordering</div>
-              </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+              <span className="text-gray-700"><strong>Case:</strong> Package size</span>
             </div>
-            <div className="flex items-start space-x-3">
-              <span className="text-xl">🚦</span>
-              <div>
-                <div className="font-semibold text-gray-900">Status</div>
-                <div className="text-sm text-gray-600">Visual indicator of stock levels (Red=Out, Orange=Low, Green=Good)</div>
-              </div>
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+              <span className="text-gray-700"><strong>Status:</strong> Stock level</span>
             </div>
           </div>
         </div>
 
         {/* Mobile Stats */}
-        <div className="md:hidden grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-xl font-bold text-blue-600">{Object.keys(inventory).length}</div>
-            <div className="text-sm text-gray-600">Suppliers</div>
+        <div className="md:hidden grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+            <div className="text-lg font-semibold text-blue-600">{Object.keys(inventory).length}</div>
+            <div className="text-xs text-gray-600">Suppliers</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-xl font-bold text-green-600">{getTotalItems()}</div>
-            <div className="text-sm text-gray-600">Items</div>
+          <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+            <div className="text-lg font-semibold text-green-600">{getTotalItems()}</div>
+            <div className="text-xs text-gray-600">Items</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-xl font-bold text-purple-600">{getTotalOnHandStock()}</div>
-            <div className="text-sm text-gray-600">On Hand</div>
+          <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+            <div className="text-lg font-semibold text-purple-600">{getTotalOnHandStock()}</div>
+            <div className="text-xs text-gray-600">On Hand</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-xl font-bold text-orange-600">{getLowStockItems()}</div>
-            <div className="text-sm text-gray-600">Low Stock</div>
+          <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+            <div className="text-lg font-semibold text-orange-600">{getLowStockItems()}</div>
+            <div className="text-xs text-gray-600">Low Stock</div>
           </div>
         </div>
 
         {/* Supplier Cards */}
         {Object.keys(inventory).length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-6xl mb-4">📦</div>
-            <div className="text-xl font-semibold text-gray-700 mb-2">No suppliers found</div>
-            <div className="text-gray-500">Add some suppliers to get started</div>
+            <div className="text-4xl mb-3">📦</div>
+            <div className="text-lg font-semibold text-gray-700 mb-1">No suppliers found</div>
+            <div className="text-sm text-gray-500">Add some suppliers to get started</div>
           </div>
         ) : (
-          <div className="grid gap-6 lg:grid-cols-1 xl:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-1 xl:grid-cols-2">
             {Object.keys(inventory).map((supplier) => (
               <SupplierCard
                 key={supplier}
@@ -326,11 +305,11 @@ export default function App() {
         )}
       </div>
 
-      {/* Footer */}
-      <div className="bg-white border-t border-gray-200 mt-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="text-center text-gray-500 text-sm">
-            <p>© 2024 Professional Inventory Manager. Built with React & Tailwind CSS.</p>
+      {/* Compact Footer */}
+      <div className="bg-white border-t border-gray-200 mt-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="text-center text-gray-500 text-xs">
+            <p>© 2024 Restaurant Inventory Management System • Built with React</p>
           </div>
         </div>
       </div>

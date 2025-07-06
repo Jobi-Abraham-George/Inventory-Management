@@ -43,7 +43,7 @@ export default function App() {
     }
   }, [inventory]);
 
-  const updateQuantity = (supplier, itemIndex, quantity) => {
+  const updateQuantity = (supplier, itemIndex, field, value) => {
     if (!inventory || !inventory[supplier] || !inventory[supplier][itemIndex]) {
       setError("Invalid item reference");
       return;
@@ -51,7 +51,7 @@ export default function App() {
 
     try {
       const updated = { ...inventory };
-      updated[supplier][itemIndex].quantity = quantity;
+      updated[supplier][itemIndex][field] = value;
       updated[supplier][itemIndex].updatedAt = new Date().toLocaleDateString();
       setInventory(updated);
       
@@ -60,12 +60,12 @@ export default function App() {
         setError(null);
       }
     } catch (error) {
-      console.error("Error updating quantity:", error);
-      setError("Failed to update item quantity.");
+      console.error("Error updating field:", error);
+      setError(`Failed to update ${field}.`);
     }
   };
 
-  const addItem = (supplier, newItem) => {
+  const addItem = (supplier, newItemName) => {
     if (!inventory || !inventory[supplier]) {
       setError("Invalid supplier");
       return;
@@ -74,8 +74,12 @@ export default function App() {
     try {
       const updated = { ...inventory };
       updated[supplier].push({
-        name: newItem,
+        name: newItemName,
+        onHandQty: 0,
+        buildQty: 0,
         quantity: 0,
+        uom: "pieces",
+        caseQty: 1,
         updatedAt: new Date().toLocaleDateString(),
       });
       setInventory(updated);
@@ -95,7 +99,21 @@ export default function App() {
     return Object.values(inventory).reduce((total, items) => total + items.length, 0);
   };
 
-  const getTotalStock = () => {
+  const getTotalOnHandStock = () => {
+    if (!inventory) return 0;
+    return Object.values(inventory).reduce((total, items) => 
+      total + items.reduce((sum, item) => sum + (item.onHandQty || 0), 0), 0
+    );
+  };
+
+  const getTotalBuildQty = () => {
+    if (!inventory) return 0;
+    return Object.values(inventory).reduce((total, items) => 
+      total + items.reduce((sum, item) => sum + (item.buildQty || 0), 0), 0
+    );
+  };
+
+  const getTotalOrderQty = () => {
     if (!inventory) return 0;
     return Object.values(inventory).reduce((total, items) => 
       total + items.reduce((sum, item) => sum + (item.quantity || 0), 0), 0
@@ -105,7 +123,14 @@ export default function App() {
   const getLowStockItems = () => {
     if (!inventory) return 0;
     return Object.values(inventory).reduce((total, items) => 
-      total + items.filter(item => (item.quantity || 0) <= 5).length, 0
+      total + items.filter(item => (item.onHandQty || 0) <= 5).length, 0
+    );
+  };
+
+  const getOutOfStockItems = () => {
+    if (!inventory) return 0;
+    return Object.values(inventory).reduce((total, items) => 
+      total + items.filter(item => (item.onHandQty || 0) === 0).length, 0
     );
   };
 
@@ -146,7 +171,7 @@ export default function App() {
               </div>
               <div className="ml-4">
                 <h1 className="text-3xl font-bold text-gray-900">Inventory Manager</h1>
-                <p className="text-gray-600">Manage your restaurant supplies efficiently</p>
+                <p className="text-gray-600">Professional restaurant supply management</p>
               </div>
             </div>
             
@@ -161,12 +186,24 @@ export default function App() {
                 <div className="text-sm text-gray-600">Items</div>
               </div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-purple-600">{getTotalStock()}</div>
-                <div className="text-sm text-gray-600">Total Stock</div>
+                <div className="text-2xl font-bold text-purple-600">{getTotalOnHandStock()}</div>
+                <div className="text-sm text-gray-600">On Hand</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-indigo-600">{getTotalBuildQty()}</div>
+                <div className="text-sm text-gray-600">To Build</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-teal-600">{getTotalOrderQty()}</div>
+                <div className="text-sm text-gray-600">To Order</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-600">{getLowStockItems()}</div>
                 <div className="text-sm text-gray-600">Low Stock</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-600">{getOutOfStockItems()}</div>
+                <div className="text-sm text-gray-600">Out of Stock</div>
               </div>
             </div>
           </div>
@@ -206,8 +243,8 @@ export default function App() {
             <div className="text-sm text-gray-600">Items</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-            <div className="text-xl font-bold text-purple-600">{getTotalStock()}</div>
-            <div className="text-sm text-gray-600">Total Stock</div>
+            <div className="text-xl font-bold text-purple-600">{getTotalOnHandStock()}</div>
+            <div className="text-sm text-gray-600">On Hand</div>
           </div>
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
             <div className="text-xl font-bold text-orange-600">{getLowStockItems()}</div>
@@ -223,7 +260,7 @@ export default function App() {
             <div className="text-gray-500">Add some suppliers to get started</div>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-6 lg:grid-cols-1 xl:grid-cols-2">
             {Object.keys(inventory).map((supplier) => (
               <SupplierCard
                 key={supplier}
@@ -241,7 +278,7 @@ export default function App() {
       <div className="bg-white border-t border-gray-200 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="text-center text-gray-500 text-sm">
-            <p>© 2024 Inventory Manager. Built with React & Tailwind CSS.</p>
+            <p>© 2024 Professional Inventory Manager. Built with React & Tailwind CSS.</p>
           </div>
         </div>
       </div>

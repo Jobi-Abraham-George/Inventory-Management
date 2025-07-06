@@ -4,24 +4,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
   const [newItem, setNewItem] = useState("");
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const handleQuantityChange = (e, index) => {
-    const value = e.target.value;
-    // Handle empty input
-    if (value === "") {
-      onUpdateQuantity(supplier, index, 0);
-      return;
-    }
-    
-    // Parse and validate the number
-    const parsedValue = parseInt(value, 10);
-    if (isNaN(parsedValue)) {
-      // Don't update if it's not a valid number
-      return;
-    }
-    
-    // Ensure non-negative values
-    const quantity = Math.max(0, parsedValue);
-    onUpdateQuantity(supplier, index, quantity);
+  const handleFieldChange = (index, field, value) => {
+    const parsedValue = field === 'uom' ? value : (value === "" ? 0 : Math.max(0, parseInt(value, 10) || 0));
+    onUpdateQuantity(supplier, index, field, parsedValue);
   };
 
   const handleAddItem = () => {
@@ -38,10 +23,10 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
     }
   };
 
-  const getStockStatus = (quantity) => {
-    if (quantity === 0) return { status: 'out', color: 'text-red-600', bg: 'bg-red-50', badge: 'bg-red-100 text-red-800' };
-    if (quantity <= 5) return { status: 'low', color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800' };
-    if (quantity <= 20) return { status: 'medium', color: 'text-yellow-600', bg: 'bg-yellow-50', badge: 'bg-yellow-100 text-yellow-800' };
+  const getStockStatus = (onHandQty) => {
+    if (onHandQty === 0) return { status: 'out', color: 'text-red-600', bg: 'bg-red-50', badge: 'bg-red-100 text-red-800' };
+    if (onHandQty <= 5) return { status: 'low', color: 'text-orange-600', bg: 'bg-orange-50', badge: 'bg-orange-100 text-orange-800' };
+    if (onHandQty <= 20) return { status: 'medium', color: 'text-yellow-600', bg: 'bg-yellow-50', badge: 'bg-yellow-100 text-yellow-800' };
     return { status: 'good', color: 'text-green-600', bg: 'bg-green-50', badge: 'bg-green-100 text-green-800' };
   };
 
@@ -58,8 +43,8 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
   };
 
   const totalItems = items.length;
-  const totalStock = items.reduce((sum, item) => sum + (item.quantity || 0), 0);
-  const lowStockItems = items.filter(item => (item.quantity || 0) <= 5).length;
+  const totalStock = items.reduce((sum, item) => sum + (item.onHandQty || 0), 0);
+  const lowStockItems = items.filter(item => (item.onHandQty || 0) <= 5).length;
 
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -74,7 +59,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
             </div>
             <div className="ml-4">
               <h2 className="text-xl font-bold text-gray-900">{supplier}</h2>
-              <p className="text-sm text-gray-600">{totalItems} items • {totalStock} units</p>
+              <p className="text-sm text-gray-600">{totalItems} items • {totalStock} units on hand</p>
             </div>
           </div>
           
@@ -100,68 +85,133 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
       {/* Card Content */}
       {isExpanded && (
         <div className="p-6">
+          {/* Table Header */}
+          <div className="mb-4">
+            <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wide pb-3 border-b border-gray-200">
+              <div className="col-span-4">Item Name</div>
+              <div className="col-span-1 text-center">On Hand</div>
+              <div className="col-span-1 text-center">Build</div>
+              <div className="col-span-1 text-center">Order</div>
+              <div className="col-span-2 text-center">UOM</div>
+              <div className="col-span-2 text-center">Case Qty</div>
+              <div className="col-span-1 text-center">Status</div>
+            </div>
+          </div>
+
           {/* Items List */}
-          <div className="space-y-4 mb-6">
+          <div className="space-y-3 mb-6">
             {items.map((item, index) => {
-              const stockStatus = getStockStatus(item.quantity || 0);
+              const stockStatus = getStockStatus(item.onHandQty || 0);
               return (
                 <div
                   key={index}
-                  className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                  className={`grid grid-cols-12 gap-2 p-3 rounded-lg border transition-all duration-200 items-center ${
                     stockStatus.status === 'out' ? 'border-red-200 bg-red-50' :
                     stockStatus.status === 'low' ? 'border-orange-200 bg-orange-50' :
                     'border-gray-200 bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
-                  {/* Item Header */}
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1 pr-4">
-                      <h3 className="font-semibold text-gray-900 text-base leading-5 mb-1">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-gray-500">
-                        {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
-                      </p>
+                  {/* Item Name */}
+                  <div className="col-span-4">
+                    <div className="font-semibold text-gray-900 text-sm mb-1">{item.name}</div>
+                    <div className="text-xs text-gray-500">
+                      {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
                     </div>
-                    
-                    {/* Status Badge */}
-                    <div className="flex items-center space-x-2">
-                      {item.quantity === 0 && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                          Out of Stock
-                        </span>
-                      )}
-                      {item.quantity > 0 && item.quantity <= 5 && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-                          Low Stock
-                        </span>
-                      )}
+                  </div>
+                  
+                  {/* On Hand Qty */}
+                  <div className="col-span-1">
+                    <input
+                      type="number"
+                      min="0"
+                      value={item.onHandQty || ''}
+                      onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
+                      className={`w-full px-2 py-1 text-xs border rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                        stockStatus.status === 'out' ? 'border-red-300 bg-red-50' :
+                        stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50' :
+                        'border-gray-300 bg-white'
+                      }`}
+                      placeholder="0"
+                    />
+                  </div>
+                  
+                  {/* Build Qty */}
+                  <div className="col-span-1">
+                    <input
+                      type="number"
+                      min="0"
+                      value={item.buildQty || ''}
+                      onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
+                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      placeholder="0"
+                    />
+                  </div>
+                  
+                  {/* Order Qty */}
+                  <div className="col-span-1">
+                    <input
+                      type="number"
+                      min="0"
+                      value={item.quantity || ''}
+                      onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
+                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      placeholder="0"
+                    />
+                  </div>
+                  
+                  {/* UOM */}
+                  <div className="col-span-2">
+                    <select
+                      value={item.uom || 'pieces'}
+                      onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
+                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                    >
+                      <option value="pieces">pieces</option>
+                      <option value="lbs">lbs</option>
+                      <option value="gallons">gallons</option>
+                      <option value="bottles">bottles</option>
+                      <option value="jars">jars</option>
+                      <option value="packages">packages</option>
+                      <option value="bags">bags</option>
+                      <option value="heads">heads</option>
+                      <option value="cans">cans</option>
+                      <option value="containers">containers</option>
+                      <option value="trays">trays</option>
+                      <option value="sheets">sheets</option>
+                      <option value="sets">sets</option>
+                      <option value="loaves">loaves</option>
+                      <option value="cases">cases</option>
+                      <option value="rolls">rolls</option>
+                    </select>
+                  </div>
+                  
+                  {/* Case Qty */}
+                  <div className="col-span-2">
+                    <input
+                      type="number"
+                      min="1"
+                      value={item.caseQty || ''}
+                      onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
+                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      placeholder="1"
+                    />
+                  </div>
+                  
+                  {/* Status Indicator */}
+                  <div className="col-span-1 flex justify-center">
+                    <div className="flex flex-col items-center space-y-1">
                       <div className={`w-3 h-3 rounded-full ${
                         stockStatus.status === 'out' ? 'bg-red-500' :
                         stockStatus.status === 'low' ? 'bg-orange-500' :
                         stockStatus.status === 'medium' ? 'bg-yellow-500' :
                         'bg-green-500'
                       }`}></div>
-                    </div>
-                  </div>
-                  
-                  {/* Quantity Control */}
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Quantity:</span>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="number"
-                        min="0"
-                        value={item.quantity || ''}
-                        onChange={(e) => handleQuantityChange(e, index)}
-                        className={`w-24 px-3 py-2 border rounded-lg text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          stockStatus.status === 'out' ? 'border-red-300 bg-red-50' :
-                          stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50' :
-                          'border-gray-300 bg-white'
-                        }`}
-                        placeholder="0"
-                      />
-                      <span className="text-sm text-gray-600">units</span>
+                      {item.onHandQty === 0 && (
+                        <span className="text-xs text-red-600 font-medium">OUT</span>
+                      )}
+                      {item.onHandQty > 0 && item.onHandQty <= 5 && (
+                        <span className="text-xs text-orange-600 font-medium">LOW</span>
+                      )}
                     </div>
                   </div>
                 </div>

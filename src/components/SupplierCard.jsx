@@ -87,7 +87,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
         <div className="p-6">
           {/* Table Header */}
           <div className="mb-4">
-            <div className="grid grid-cols-12 gap-2 text-xs font-semibold text-gray-600 uppercase tracking-wide pb-3 border-b border-gray-200">
+            <div className="grid grid-cols-12 gap-3 text-xs font-semibold text-gray-600 uppercase tracking-wide pb-3 border-b border-gray-200">
               <div className="col-span-4">Item Name</div>
               <div className="col-span-1 text-center">On Hand</div>
               <div className="col-span-1 text-center">Build</div>
@@ -105,7 +105,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
               return (
                 <div
                   key={index}
-                  className={`grid grid-cols-12 gap-2 p-3 rounded-lg border transition-all duration-200 items-center ${
+                  className={`grid grid-cols-12 gap-3 p-4 rounded-lg border transition-all duration-200 items-center ${
                     stockStatus.status === 'out' ? 'border-red-200 bg-red-50' :
                     stockStatus.status === 'low' ? 'border-orange-200 bg-orange-50' :
                     'border-gray-200 bg-gray-50 hover:bg-gray-100'
@@ -126,7 +126,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                       min="0"
                       value={item.onHandQty || ''}
                       onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
-                      className={`w-full px-2 py-1 text-xs border rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                      className={`w-full px-3 py-2 text-sm border rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                         stockStatus.status === 'out' ? 'border-red-300 bg-red-50' :
                         stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50' :
                         'border-gray-300 bg-white'
@@ -142,7 +142,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                       min="0"
                       value={item.buildQty || ''}
                       onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                       placeholder="0"
                     />
                   </div>
@@ -154,7 +154,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                       min="0"
                       value={item.quantity || ''}
                       onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                       placeholder="0"
                     />
                   </div>
@@ -164,7 +164,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     <select
                       value={item.uom || 'pieces'}
                       onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                     >
                       <option value="pieces">pieces</option>
                       <option value="lbs">lbs</option>
@@ -192,7 +192,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                       min="1"
                       value={item.caseQty || ''}
                       onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                       placeholder="1"
                     />
                   </div>
@@ -200,7 +200,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                   {/* Status Indicator */}
                   <div className="col-span-1 flex justify-center">
                     <div className="flex flex-col items-center space-y-1">
-                      <div className={`w-3 h-3 rounded-full ${
+                      <div className={`w-4 h-4 rounded-full ${
                         stockStatus.status === 'out' ? 'bg-red-500' :
                         stockStatus.status === 'low' ? 'bg-orange-500' :
                         stockStatus.status === 'medium' ? 'bg-yellow-500' :

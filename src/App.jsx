@@ -232,6 +232,58 @@ export default function App() {
           </div>
         )}
 
+        {/* Field Explanations Legend */}
+        <div className="mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+            <span className="text-blue-600 mr-2">ℹ️</span>
+            Field Explanations
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="flex items-start space-x-3">
+              <span className="text-xl">📊</span>
+              <div>
+                <div className="font-semibold text-gray-900">On Hand Qty</div>
+                <div className="text-sm text-gray-600">Current stock quantity in your inventory</div>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <span className="text-xl">🔨</span>
+              <div>
+                <div className="font-semibold text-gray-900">Build Qty</div>
+                <div className="text-sm text-gray-600">Quantities you need to build/produce</div>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <span className="text-xl">📦</span>
+              <div>
+                <div className="font-semibold text-gray-900">Order Qty</div>
+                <div className="text-sm text-gray-600">Quantities you need to order from suppliers</div>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <span className="text-xl">📏</span>
+              <div>
+                <div className="font-semibold text-gray-900">UOM</div>
+                <div className="text-sm text-gray-600">Unit of Measure (pieces, lbs, gallons, bottles, etc.)</div>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <span className="text-xl">📁</span>
+              <div>
+                <div className="font-semibold text-gray-900">Case Qty</div>
+                <div className="text-sm text-gray-600">Case quantities for packaging/ordering</div>
+              </div>
+            </div>
+            <div className="flex items-start space-x-3">
+              <span className="text-xl">🚦</span>
+              <div>
+                <div className="font-semibold text-gray-900">Status</div>
+                <div className="text-sm text-gray-600">Visual indicator of stock levels (Red=Out, Orange=Low, Green=Good)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Mobile Stats */}
         <div className="md:hidden grid grid-cols-2 gap-4 mb-6">
           <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">

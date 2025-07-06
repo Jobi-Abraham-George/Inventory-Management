@@ -101,64 +101,67 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
       {isExpanded && (
         <div className="p-6">
           {/* Items List */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-4 mb-6">
             {items.map((item, index) => {
               const stockStatus = getStockStatus(item.quantity || 0);
               return (
                 <div
                   key={index}
-                  className={`flex items-center justify-between p-4 rounded-lg border-2 transition-all duration-200 ${
+                  className={`p-4 rounded-lg border-2 transition-all duration-200 ${
                     stockStatus.status === 'out' ? 'border-red-200 bg-red-50' :
                     stockStatus.status === 'low' ? 'border-orange-200 bg-orange-50' :
                     'border-gray-200 bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center">
-                      <span className="font-medium text-gray-900 truncate">{item.name}</span>
+                  {/* Item Header */}
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1 pr-4">
+                      <h3 className="font-semibold text-gray-900 text-base leading-5 mb-1">
+                        {item.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">
+                        {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
+                      </p>
+                    </div>
+                    
+                    {/* Status Badge */}
+                    <div className="flex items-center space-x-2">
                       {item.quantity === 0 && (
-                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                           Out of Stock
                         </span>
                       )}
                       {item.quantity > 0 && item.quantity <= 5 && (
-                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                           Low Stock
                         </span>
                       )}
-                    </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center">
-                      <label className="text-sm font-medium text-gray-700 mr-2">Qty:</label>
-                      <div className="relative">
-                        <input
-                          type="number"
-                          min="0"
-                          value={item.quantity || ''}
-                          onChange={(e) => handleQuantityChange(e, index)}
-                          className={`w-20 px-3 py-2 border rounded-lg text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                            stockStatus.status === 'out' ? 'border-red-300 bg-red-50' :
-                            stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50' :
-                            'border-gray-300 bg-white'
-                          }`}
-                          placeholder="0"
-                        />
-                      </div>
-                    </div>
-                    
-                    {/* Stock level indicator */}
-                    <div className="flex items-center">
                       <div className={`w-3 h-3 rounded-full ${
                         stockStatus.status === 'out' ? 'bg-red-500' :
                         stockStatus.status === 'low' ? 'bg-orange-500' :
                         stockStatus.status === 'medium' ? 'bg-yellow-500' :
                         'bg-green-500'
                       }`}></div>
+                    </div>
+                  </div>
+                  
+                  {/* Quantity Control */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Quantity:</span>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="number"
+                        min="0"
+                        value={item.quantity || ''}
+                        onChange={(e) => handleQuantityChange(e, index)}
+                        className={`w-24 px-3 py-2 border rounded-lg text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          stockStatus.status === 'out' ? 'border-red-300 bg-red-50' :
+                          stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50' :
+                          'border-gray-300 bg-white'
+                        }`}
+                        placeholder="0"
+                      />
+                      <span className="text-sm text-gray-600">units</span>
                     </div>
                   </div>
                 </div>

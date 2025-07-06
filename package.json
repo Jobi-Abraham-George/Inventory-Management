@@ -1,6 +1,7 @@
 {
   "name": "inventory-manager",
   "version": "1.0.0",
+  "type": "module",
   "homepage": "https://jobi-abraham-george.github.io/Inventory-Management",
   "scripts": {
     "dev": "vite",

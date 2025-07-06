@@ -221,16 +221,16 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
       {/* Professional Table Layout */}
       {isExpanded && (
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full table-fixed">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">On Hand</th>
-                <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Build</th>
-                <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">UOM</th>
-                <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Case</th>
-                <th className="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="w-1/4 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                <th className="w-1/8 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">On Hand</th>
+                <th className="w-1/8 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Build</th>
+                <th className="w-1/8 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+                <th className="w-1/8 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">UOM</th>
+                <th className="w-1/8 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Case</th>
+                <th className="w-1/8 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -242,9 +242,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     <td className="px-3 py-2">
                       <div className="flex items-center">
                         <span className="text-sm mr-2">{getItemEmoji(item.name)}</span>
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">{item.name}</div>
-                          <div className="text-xs text-gray-500">
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-medium text-gray-900 truncate">{item.name}</div>
+                          <div className="text-xs text-gray-500 truncate">
                             {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
                           </div>
                         </div>
@@ -296,7 +296,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                       <select
                         value={item.uom || 'pieces'}
                         onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
-                        className="w-20 px-1 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full px-1 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                       >
                         <option value="pieces">pieces</option>
                         <option value="lbs">lbs</option>
@@ -331,14 +331,17 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     
                     {/* Status */}
                     <td className="px-3 py-2 text-center">
-                      <div className="flex items-center justify-center">
-                        <div className={`w-2 h-2 rounded-full ${stockStatus.dot}`}></div>
-                        {stockStatus.status === 'out' && (
-                          <span className="ml-1 text-xs font-medium text-red-600">OUT</span>
-                        )}
-                        {stockStatus.status === 'low' && (
-                          <span className="ml-1 text-xs font-medium text-orange-600">LOW</span>
-                        )}
+                      <div className="flex items-center justify-center space-x-1">
+                        <div className={`w-3 h-3 rounded-full ${stockStatus.dot}`}></div>
+                        <span className={`text-xs font-medium ${
+                          stockStatus.status === 'out' ? 'text-red-600' :
+                          stockStatus.status === 'low' ? 'text-orange-600' :
+                          'text-green-600'
+                        }`}>
+                          {stockStatus.status === 'out' ? 'OUT' :
+                           stockStatus.status === 'low' ? 'LOW' :
+                           'OK'}
+                        </span>
                       </div>
                     </td>
                   </tr>

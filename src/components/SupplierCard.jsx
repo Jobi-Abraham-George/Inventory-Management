@@ -42,6 +42,126 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
     return icons[supplierName] || '📦';
   };
 
+  const getItemImage = (itemName) => {
+    const images = {
+      // Cash n Carry items
+      'Burger buns': '🍔',
+      'Ketchup gallon': '🍅',
+      'Mustard Sauce': '🟡',
+      'Pickles for burger': '🥒',
+      'Beef tubes': '🥩',
+      'Brothers pepperoni': '🍕',
+      'Potato wedges': '🍟',
+      
+      // Veggie Order items
+      'Green peppers': '🫑',
+      'Tomatoes': '🍅',
+      'Mushrooms': '🍄',
+      'Onions': '🧅',
+      'Cucumbers': '🥒',
+      'Lettuce Iceberg': '🥬',
+      'Romanian lettuce': '🥬',
+      
+      // Saputo Order items
+      'Pizza flour': '🌾',
+      'Crushed Tomatoes': '🍅',
+      'Evaporated milk': '🥛',
+      'Pineapple': '🍍',
+      'Black Olives': '🫒',
+      'Croutons': '🍞',
+      'Vinegar': '🧴',
+      'Black Pepper': '🌶️',
+      'Hot Peppers': '🌶️',
+      'Salt': '🧂',
+      'Oregano': '🌿',
+      'Honey garlic sauce': '🍯',
+      'Hot Sauce': '🌶️',
+      'Medium Sauce': '🌶️',
+      'Mild Sauce': '🌶️',
+      'Mozzarella cheese': '🧀',
+      'Cheese curds': '🧀',
+      'Cheddar cheese': '🧀',
+      'Feta cheese': '🧀',
+      'Cheddar shredded cheese': '🧀',
+      'Tartar sauce': '🐟',
+      'Sweet & Sour': '🍯',
+      'Sour Cream': '🥛',
+      'Ketchup Pots': '🍅',
+      'Nachos': '🌮',
+      'Bacon bits': '🥓',
+      'Wings': '🍗',
+      'Ham chopped': '🐷',
+      'Beef': '🥩',
+      'Pepperoni': '🍕',
+      'Salami': '🥩',
+      'Chicken fingers': '🍗',
+      'Lasagna': '🍝',
+      'Seasoned chicken (white)': '🍗',
+      'Zesty chicken (spicy)': '🍗',
+      'Italian Sausage': '🌭',
+      'Gluten free crust': '🍕',
+      'Egg Rolls Sheet': '🥟',
+      'Bacon crumbled': '🥓',
+      'Vegan Pepperoni': '🌱',
+      'Stuffed crust cheese': '🧀',
+      'Parmesan cheese': '🧀',
+      'Garlic Spread': '🧄',
+      'Paper plates': '🍽️',
+      '12LB bags for dough': '🌾',
+      'Fork & Knife': '🍴',
+      'Boxes': '📦',
+      
+      // Sysco Order items
+      'Fries': '🍟',
+      'Philly steak': '🥩',
+      'Onion Rings': '🧅',
+      'Mozza sticks': '🧀',
+      'Spicy Chicken Breast': '🍗',
+      'Deep fried pickles': '🥒',
+      'Jalapeno poppers': '🌶️',
+      'Choco lava cake': '🍰',
+      'Cheesecake': '🍰',
+      'Sliced Turkey': '🦃',
+      'Sliced Ham': '🐷',
+      'Batter mix (for fish)': '🐟',
+      'Oil': '🛢️',
+      'Gravy mix (beef)': '🍖',
+      'BBQ sauce (Bullseye)': '🍖',
+      'Ranch Sauce': '🥗',
+      'Mayo': '🥪',
+      'Greek dressing': '🥗',
+      'Salt Pots': '🧂',
+      'Black Pepper Pots': '🌶️',
+      'Drinks': '🥤',
+      'Parchment paper (Sm & Lg)': '📄',
+      
+      // Maroon Order items
+      '4oz fish': '🐟',
+      'Donair Cones': '🌯',
+      '60oz Paper cups & lids': '🥤',
+      '3-25 oz Cups & Lids': '🥤',
+      '5LB paper bags': '📦',
+      '10LB Paper bags': '📦',
+      '14LB Paper bags': '📦',
+      '20LB Paper Bags': '📦',
+      'Aluminium Small & Large Foils': '🛡️',
+      '8x8 Containers': '📦',
+      '9x6 Containers': '📦',
+      '6x6 Containers': '📦',
+      'Small aluminium containers & lids': '📦',
+      'Lg aluminium containers & lids': '📦',
+      
+      // Fancy Lebanese items
+      'Lg Subs': '🥙',
+      'Small Subs': '🥙',
+      '9" Pita (Super)': '🫓',
+      '8" Pita (Lg & Md)': '🫓',
+      '6" Pita (Sm)': '🫓',
+      'Toast': '🍞'
+    };
+    return images[itemName] || '🍽️';
+  };
+
   const totalItems = items.length;
   const totalStock = items.reduce((sum, item) => sum + (item.onHandQty || 0), 0);
   const lowStockItems = items.filter(item => (item.onHandQty || 0) <= 5).length;
@@ -85,86 +205,123 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
       {/* Card Content */}
       {isExpanded && (
         <div className="p-6">
-          {/* Table Header */}
-          <div className="mb-4">
-            <div className="grid grid-cols-12 gap-3 text-xs font-semibold text-gray-600 uppercase tracking-wide pb-3 border-b border-gray-200">
-              <div className="col-span-4">Item Name</div>
-              <div className="col-span-1 text-center">On Hand</div>
-              <div className="col-span-1 text-center">Build</div>
-              <div className="col-span-1 text-center">Order</div>
-              <div className="col-span-2 text-center">UOM</div>
-              <div className="col-span-2 text-center">Case Qty</div>
-              <div className="col-span-1 text-center">Status</div>
-            </div>
-          </div>
-
           {/* Items List */}
-          <div className="space-y-3 mb-6">
+          <div className="space-y-4 mb-6">
             {items.map((item, index) => {
               const stockStatus = getStockStatus(item.onHandQty || 0);
               return (
                 <div
                   key={index}
-                  className={`grid grid-cols-12 gap-3 p-4 rounded-lg border transition-all duration-200 items-center ${
+                  className={`p-6 rounded-lg border transition-all duration-200 ${
                     stockStatus.status === 'out' ? 'border-red-200 bg-red-50' :
                     stockStatus.status === 'low' ? 'border-orange-200 bg-orange-50' :
                     'border-gray-200 bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
-                  {/* Item Name */}
-                  <div className="col-span-4">
-                    <div className="font-semibold text-gray-900 text-sm mb-1">{item.name}</div>
-                    <div className="text-xs text-gray-500">
-                      {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
+                  {/* Item Header with Name and Image */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                      {/* Item Image */}
+                      <div className="w-12 h-12 bg-white rounded-lg flex items-center justify-center border-2 border-gray-200 shadow-sm">
+                        <span className="text-2xl">{getItemImage(item.name)}</span>
+                      </div>
+                      
+                      {/* Item Info */}
+                      <div>
+                        <div className="font-bold text-gray-900 text-lg">{item.name}</div>
+                        <div className="text-sm text-gray-500">
+                          {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Status Indicator */}
+                    <div className="flex items-center space-x-2">
+                      {item.onHandQty === 0 && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-red-100 text-red-800">
+                          OUT OF STOCK
+                        </span>
+                      )}
+                      {item.onHandQty > 0 && item.onHandQty <= 5 && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-orange-100 text-orange-800">
+                          LOW STOCK
+                        </span>
+                      )}
+                      <div className={`w-5 h-5 rounded-full ${
+                        stockStatus.status === 'out' ? 'bg-red-500' :
+                        stockStatus.status === 'low' ? 'bg-orange-500' :
+                        stockStatus.status === 'medium' ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`}></div>
                     </div>
                   </div>
                   
-                  {/* On Hand Qty */}
-                  <div className="col-span-1">
-                    <input
-                      type="number"
-                      min="0"
-                      value={item.onHandQty || ''}
-                      onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
-                      className={`w-full px-3 py-2 text-sm border rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                        stockStatus.status === 'out' ? 'border-red-300 bg-red-50' :
-                        stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50' :
-                        'border-gray-300 bg-white'
-                      }`}
-                      placeholder="0"
-                    />
+                  {/* Quantity Controls Grid */}
+                  <div className="grid grid-cols-12 gap-4">
+                    {/* On Hand Qty */}
+                    <div className="col-span-3">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">ON HAND</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={item.onHandQty || ''}
+                        onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
+                        className={`w-full px-4 py-4 text-lg border-2 rounded-xl text-center font-bold focus:outline-none focus:ring-3 focus:ring-blue-500 focus:border-transparent ${
+                          stockStatus.status === 'out' ? 'border-red-400 bg-red-50 text-red-700' :
+                          stockStatus.status === 'low' ? 'border-orange-400 bg-orange-50 text-orange-700' :
+                          'border-gray-300 bg-white text-gray-900'
+                        }`}
+                        placeholder="0"
+                      />
+                    </div>
+                    
+                    {/* Build Qty */}
+                    <div className="col-span-3">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">BUILD</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={item.buildQty || ''}
+                        onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
+                        className="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-xl text-center font-bold focus:outline-none focus:ring-3 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                        placeholder="0"
+                      />
+                    </div>
+                    
+                    {/* Order Qty */}
+                    <div className="col-span-3">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">ORDER</label>
+                      <input
+                        type="number"
+                        min="0"
+                        value={item.quantity || ''}
+                        onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
+                        className="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-xl text-center font-bold focus:outline-none focus:ring-3 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                        placeholder="0"
+                      />
+                    </div>
+                    
+                    {/* Case Qty */}
+                    <div className="col-span-3">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">CASE QTY</label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.caseQty || ''}
+                        onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
+                        className="w-full px-4 py-4 text-lg border-2 border-gray-300 rounded-xl text-center font-bold focus:outline-none focus:ring-3 focus:ring-blue-500 focus:border-transparent bg-white text-gray-900"
+                        placeholder="1"
+                      />
+                    </div>
                   </div>
                   
-                  {/* Build Qty */}
-                  <div className="col-span-1">
-                    <input
-                      type="number"
-                      min="0"
-                      value={item.buildQty || ''}
-                      onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                      placeholder="0"
-                    />
-                  </div>
-                  
-                  {/* Order Qty */}
-                  <div className="col-span-1">
-                    <input
-                      type="number"
-                      min="0"
-                      value={item.quantity || ''}
-                      onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                      placeholder="0"
-                    />
-                  </div>
-                  
-                  {/* UOM */}
-                  <div className="col-span-2">
+                  {/* UOM Selector */}
+                  <div className="mt-4">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">UNIT OF MEASURE</label>
                     <select
                       value={item.uom || 'pieces'}
                       onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                      className="w-full px-4 py-3 text-base border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-blue-500 focus:border-transparent bg-white font-medium"
                     >
                       <option value="pieces">pieces</option>
                       <option value="lbs">lbs</option>
@@ -183,36 +340,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                       <option value="cases">cases</option>
                       <option value="rolls">rolls</option>
                     </select>
-                  </div>
-                  
-                  {/* Case Qty */}
-                  <div className="col-span-2">
-                    <input
-                      type="number"
-                      min="1"
-                      value={item.caseQty || ''}
-                      onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md text-center font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
-                      placeholder="1"
-                    />
-                  </div>
-                  
-                  {/* Status Indicator */}
-                  <div className="col-span-1 flex justify-center">
-                    <div className="flex flex-col items-center space-y-1">
-                      <div className={`w-4 h-4 rounded-full ${
-                        stockStatus.status === 'out' ? 'bg-red-500' :
-                        stockStatus.status === 'low' ? 'bg-orange-500' :
-                        stockStatus.status === 'medium' ? 'bg-yellow-500' :
-                        'bg-green-500'
-                      }`}></div>
-                      {item.onHandQty === 0 && (
-                        <span className="text-xs text-red-600 font-medium">OUT</span>
-                      )}
-                      {item.onHandQty > 0 && item.onHandQty <= 5 && (
-                        <span className="text-xs text-orange-600 font-medium">LOW</span>
-                      )}
-                    </div>
                   </div>
                 </div>
               );

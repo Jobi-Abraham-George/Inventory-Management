@@ -6,10 +6,8 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html')
-      }
+      input: resolve(__dirname, 'index.html')
     }
   },
-  base: '/Inventory-Management/' // 👈 required for GitHub Pages
+  base: '/Inventory-Management/'  // 👈 Needed for GitHub Pages
 })

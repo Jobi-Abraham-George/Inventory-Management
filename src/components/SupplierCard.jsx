@@ -250,7 +250,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">ID ↑↓</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Name ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Quantity ↑↓</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Build ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Order ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Case ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">UOM ↑↓</th>
@@ -287,16 +286,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                             stockStatus.status === 'low' ? 'border-orange-600 bg-orange-900/20 text-orange-300' :
                             'border-slate-600 bg-slate-700 text-slate-100'
                           }`}
-                          placeholder="0"
-                        />
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <input
-                          type="number"
-                          min="0"
-                          value={item.buildQty || ''}
-                          onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                          className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="0"
                         />
                       </td>
@@ -415,17 +404,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">🔨 Build</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={item.buildQty || ''}
-                          onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                          className="w-full px-4 py-4 text-lg border-2 border-slate-600 bg-slate-700 rounded-xl text-center font-bold text-slate-100 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
-                          placeholder="0"
-                        />
-                      </div>
-                      <div>
                         <label className="block text-sm font-medium text-slate-300 mb-2">📦 Order</label>
                         <input
                           type="number"
@@ -447,47 +425,30 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           placeholder="1"
                         />
                       </div>
-                    </div>
-                    
-                    {/* UOM Selector - Mobile Optimized */}
-                    <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">📏 Unit of Measure</label>
-                      <select
-                        value={item.uom || 'pieces'}
-                        onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
-                        className="w-full px-4 py-4 text-base border-2 border-slate-600 bg-slate-700 text-slate-100 rounded-xl focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
-                      >
-                        <option value="pieces">Pieces</option>
-                        <option value="lbs">Pounds</option>
-                        <option value="gallons">Gallons</option>
-                        <option value="bottles">Bottles</option>
-                        <option value="jars">Jars</option>
-                        <option value="packages">Packages</option>
-                        <option value="bags">Bags</option>
-                        <option value="heads">Heads</option>
-                        <option value="cans">Cans</option>
-                        <option value="containers">Containers</option>
-                        <option value="trays">Trays</option>
-                        <option value="sheets">Sheets</option>
-                        <option value="sets">Sets</option>
-                        <option value="loaves">Loaves</option>
-                        <option value="cases">Cases</option>
-                        <option value="rolls">Rolls</option>
-                      </select>
-                    </div>
-                    
-                    {/* Location Info - Mobile */}
-                    <div className="mt-4 p-3 bg-slate-700/50 rounded-lg">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-400">Location:</span>
-                        <span className="text-slate-200 font-medium">
-                          {supplier === 'Cash n Carry' ? 'Warehouse A' :
-                           supplier === 'Veggie Order' ? 'Cold Storage' :
-                           supplier === 'Saputo Order' ? 'Dry Storage' :
-                           supplier === 'Sysco Order' ? 'Freezer A' :
-                           supplier === 'Maroon Order' ? 'Packaging Area' :
-                           'Prep Kitchen'}
-                        </span>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">📏 UOM</label>
+                        <select
+                          value={item.uom || 'pieces'}
+                          onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
+                          className="w-full px-4 py-4 text-base border-2 border-slate-600 bg-slate-700 text-slate-100 rounded-xl focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
+                        >
+                          <option value="pieces">Pieces</option>
+                          <option value="lbs">Pounds</option>
+                          <option value="gallons">Gallons</option>
+                          <option value="bottles">Bottles</option>
+                          <option value="jars">Jars</option>
+                          <option value="packages">Packages</option>
+                          <option value="bags">Bags</option>
+                          <option value="heads">Heads</option>
+                          <option value="cans">Cans</option>
+                          <option value="containers">Containers</option>
+                          <option value="trays">Trays</option>
+                          <option value="sheets">Sheets</option>
+                          <option value="sets">Sets</option>
+                          <option value="loaves">Loaves</option>
+                          <option value="cases">Cases</option>
+                          <option value="rolls">Rolls</option>
+                        </select>
                       </div>
                     </div>
                   </div>

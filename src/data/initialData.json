@@ -1,120 +1,147 @@
 {
-  "Cash n Carry": [
-    { "name": "Burger buns", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 24, "updatedAt": "" },
-    { "name": "Ketchup gallon", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "gallons", "caseQty": 4, "updatedAt": "" },
-    { "name": "Mustard Sauce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Pickles for burger", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "jars", "caseQty": 6, "updatedAt": "" },
-    { "name": "Beef tubes", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Brothers pepperoni", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "packages", "caseQty": 12, "updatedAt": "" },
-    { "name": "Potato wedges", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 6, "updatedAt": "" }
-  ],
-  "Veggie Order": [
-    { "name": "Green peppers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 25, "updatedAt": "" },
-    { "name": "Tomatoes", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 20, "updatedAt": "" },
-    { "name": "Mushrooms", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 5, "updatedAt": "" },
-    { "name": "Onions", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 50, "updatedAt": "" },
-    { "name": "Cucumbers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 12, "updatedAt": "" },
-    { "name": "Lettuce Iceberg", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "heads", "caseQty": 24, "updatedAt": "" },
-    { "name": "Romanian lettuce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "heads", "caseQty": 24, "updatedAt": "" }
-  ],
-  "Saputo Order": [
-    { "name": "Pizza flour", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 4, "updatedAt": "" },
-    { "name": "Crushed Tomatoes", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "cans", "caseQty": 6, "updatedAt": "" },
-    { "name": "Evaporated milk", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "cans", "caseQty": 12, "updatedAt": "" },
-    { "name": "Pineapple", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "cans", "caseQty": 6, "updatedAt": "" },
-    { "name": "Black Olives", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "cans", "caseQty": 12, "updatedAt": "" },
-    { "name": "Croutons", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 12, "updatedAt": "" },
-    { "name": "Vinegar", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Black Pepper", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "containers", "caseQty": 6, "updatedAt": "" },
-    { "name": "Hot Peppers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "jars", "caseQty": 12, "updatedAt": "" },
-    { "name": "Salt", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "containers", "caseQty": 12, "updatedAt": "" },
-    { "name": "Oregano", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "containers", "caseQty": 6, "updatedAt": "" },
-    { "name": "Honey garlic sauce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Hot Sauce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Medium Sauce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Mild Sauce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Mozzarella cheese", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 6, "updatedAt": "" },
-    { "name": "Cheese curds", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 6, "updatedAt": "" },
-    { "name": "Cheddar cheese", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 6, "updatedAt": "" },
-    { "name": "Feta cheese", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 4, "updatedAt": "" },
-    { "name": "Cheddar shredded cheese", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 4, "updatedAt": "" },
-    { "name": "Tartar sauce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Sweet & Sour", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Sour Cream", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "containers", "caseQty": 6, "updatedAt": "" },
-    { "name": "Ketchup Pots", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "Nachos", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 6, "updatedAt": "" },
-    { "name": "Bacon bits", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 6, "updatedAt": "" },
-    { "name": "Wings", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Ham chopped", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 5, "updatedAt": "" },
-    { "name": "Beef", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Pepperoni", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "packages", "caseQty": 12, "updatedAt": "" },
-    { "name": "Salami", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "packages", "caseQty": 12, "updatedAt": "" },
-    { "name": "Chicken fingers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Lasagna", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "trays", "caseQty": 4, "updatedAt": "" },
-    { "name": "Seasoned chicken (white)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Zesty chicken (spicy)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Italian Sausage", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Gluten free crust", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 12, "updatedAt": "" },
-    { "name": "Egg Rolls Sheet", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "sheets", "caseQty": 50, "updatedAt": "" },
-    { "name": "Bacon crumbled", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 6, "updatedAt": "" },
-    { "name": "Vegan Pepperoni", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "packages", "caseQty": 12, "updatedAt": "" },
-    { "name": "Stuffed crust cheese", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 6, "updatedAt": "" },
-    { "name": "Parmesan cheese", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "containers", "caseQty": 6, "updatedAt": "" },
-    { "name": "Garlic Spread", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "containers", "caseQty": 12, "updatedAt": "" },
-    { "name": "Paper plates", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "12LB bags for dough", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 50, "updatedAt": "" },
-    { "name": "Fork & Knife", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "sets", "caseQty": 100, "updatedAt": "" },
-    { "name": "Boxes", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 50, "updatedAt": "" }
-  ],
-  "Sysco Order": [
-    { "name": "Fries", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 6, "updatedAt": "" },
-    { "name": "Chicken fingers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Philly steak", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "updatedAt": "" },
-    { "name": "Onion Rings", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 6, "updatedAt": "" },
-    { "name": "Mozza sticks", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 48, "updatedAt": "" },
-    { "name": "Spicy Chicken Breast", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 12, "updatedAt": "" },
-    { "name": "Deep fried pickles", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 24, "updatedAt": "" },
-    { "name": "Jalapeno poppers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 24, "updatedAt": "" },
-    { "name": "Choco lava cake", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 12, "updatedAt": "" },
-    { "name": "Cheesecake", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 12, "updatedAt": "" },
-    { "name": "Sliced Turkey", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 5, "updatedAt": "" },
-    { "name": "Sliced Ham", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 5, "updatedAt": "" },
-    { "name": "Batter mix (for fish)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bags", "caseQty": 4, "updatedAt": "" },
-    { "name": "Oil", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "gallons", "caseQty": 4, "updatedAt": "" },
-    { "name": "Gravy mix (beef)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "packages", "caseQty": 12, "updatedAt": "" },
-    { "name": "BBQ sauce (Bullseye)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Ranch Sauce", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Mayo", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "jars", "caseQty": 4, "updatedAt": "" },
-    { "name": "Greek dressing", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "updatedAt": "" },
-    { "name": "Salt Pots", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "Black Pepper Pots", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "Drinks", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "cases", "caseQty": 24, "updatedAt": "" },
-    { "name": "Parchment paper (Sm & Lg)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "rolls", "caseQty": 12, "updatedAt": "" }
-  ],
-  "Maroon Order": [
-    { "name": "4oz fish", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 20, "updatedAt": "" },
-    { "name": "Donair Cones", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "60oz Paper cups & lids", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "sets", "caseQty": 100, "updatedAt": "" },
-    { "name": "3-25 oz Cups & Lids", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "sets", "caseQty": 100, "updatedAt": "" },
-    { "name": "5LB paper bags", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 500, "updatedAt": "" },
-    { "name": "10LB Paper bags", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 250, "updatedAt": "" },
-    { "name": "14LB Paper bags", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 200, "updatedAt": "" },
-    { "name": "20LB Paper Bags", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "Aluminium Small & Large Foils", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "rolls", "caseQty": 12, "updatedAt": "" },
-    { "name": "8x8 Containers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 150, "updatedAt": "" },
-    { "name": "9x6 Containers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 150, "updatedAt": "" },
-    { "name": "6x6 Containers", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 200, "updatedAt": "" },
-    { "name": "Small aluminium containers & lids", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "sets", "caseQty": 100, "updatedAt": "" },
-    { "name": "Lg aluminium containers & lids", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "sets", "caseQty": 100, "updatedAt": "" },
-    { "name": "Boxes", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 50, "updatedAt": "" },
-    { "name": "Parchment paper (Sm & Lg)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "rolls", "caseQty": 12, "updatedAt": "" }
-  ],
-  "Fancy Lebanese": [
-    { "name": "Lg Subs", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 50, "updatedAt": "" },
-    { "name": "Small Subs", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "9\" Pita (Super)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "8\" Pita (Lg & Md)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "6\" Pita (Sm)", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 100, "updatedAt": "" },
-    { "name": "Toast", "onHandQty": 0, "buildQty": 0, "quantity": 0, "uom": "loaves", "caseQty": 12, "updatedAt": "" }
+  "suppliers": {
+    "cash-n-carry": {
+      "id": "cash-n-carry",
+      "name": "Cash n Carry",
+      "contactInfo": {
+        "phone": "(555) 123-4567",
+        "email": "orders@cashncarry.com",
+        "address": "1234 Wholesale Ave, Food City, FC 12345",
+        "contactPerson": "Mike Johnson",
+        "website": "www.cashncarry.com"
+      },
+      "businessInfo": {
+        "leadTimeDays": 2,
+        "minimumOrder": 100,
+        "paymentTerms": "Net 30",
+        "deliveryDays": ["Monday", "Wednesday", "Friday"],
+        "notes": "Bulk food supplier specializing in restaurant supplies"
+      },
+      "status": "active",
+      "createdAt": "2024-01-01",
+      "updatedAt": "2024-01-01"
+    },
+    "veggie-order": {
+      "id": "veggie-order", 
+      "name": "Veggie Order",
+      "contactInfo": {
+        "phone": "(555) 234-5678",
+        "email": "fresh@veggieorder.com",
+        "address": "5678 Fresh Market Rd, Green Valley, GV 23456",
+        "contactPerson": "Sarah Williams",
+        "website": "www.veggieorder.com"
+      },
+      "businessInfo": {
+        "leadTimeDays": 1,
+        "minimumOrder": 50,
+        "paymentTerms": "Net 15",
+        "deliveryDays": ["Tuesday", "Thursday", "Saturday"],
+        "notes": "Fresh produce and vegetables supplier"
+      },
+      "status": "active",
+      "createdAt": "2024-01-01",
+      "updatedAt": "2024-01-01"
+    },
+    "saputo-order": {
+      "id": "saputo-order",
+      "name": "Saputo Order", 
+      "contactInfo": {
+        "phone": "(555) 345-6789",
+        "email": "sales@saputo.com",
+        "address": "9012 Dairy Lane, Cheese Town, CT 34567",
+        "contactPerson": "Robert Brown",
+        "website": "www.saputo.com"
+      },
+      "businessInfo": {
+        "leadTimeDays": 3,
+        "minimumOrder": 200,
+        "paymentTerms": "Net 30",
+        "deliveryDays": ["Monday", "Thursday"],
+        "notes": "Dairy products and cheese supplier"
+      },
+      "status": "active",
+      "createdAt": "2024-01-01",
+      "updatedAt": "2024-01-01"
+    },
+    "sysco-order": {
+      "id": "sysco-order",
+      "name": "Sysco Order",
+      "contactInfo": {
+        "phone": "(555) 456-7890", 
+        "email": "orders@sysco.com",
+        "address": "3456 Distribution Blvd, Food Hub, FH 45678",
+        "contactPerson": "Jennifer Davis",
+        "website": "www.sysco.com"
+      },
+      "businessInfo": {
+        "leadTimeDays": 2,
+        "minimumOrder": 150,
+        "paymentTerms": "Net 30",
+        "deliveryDays": ["Monday", "Wednesday", "Friday"],
+        "notes": "Full-service food distribution company"
+      },
+      "status": "active",
+      "createdAt": "2024-01-01",
+      "updatedAt": "2024-01-01"
+    },
+    "maroon-order": {
+      "id": "maroon-order",
+      "name": "Maroon Order",
+      "contactInfo": {
+        "phone": "(555) 567-8901",
+        "email": "info@maroonorder.com", 
+        "address": "7890 Package Way, Container City, CC 56789",
+        "contactPerson": "David Wilson",
+        "website": "www.maroonorder.com"
+      },
+      "businessInfo": {
+        "leadTimeDays": 1,
+        "minimumOrder": 75,
+        "paymentTerms": "Net 15",
+        "deliveryDays": ["Tuesday", "Friday"],
+        "notes": "Packaging and disposable supplies specialist"
+      },
+      "status": "active",
+      "createdAt": "2024-01-01", 
+      "updatedAt": "2024-01-01"
+    },
+    "fancy-lebanese": {
+      "id": "fancy-lebanese",
+      "name": "Fancy Lebanese",
+      "contactInfo": {
+        "phone": "(555) 678-9012",
+        "email": "orders@fancylebanese.com",
+        "address": "1122 Middle East Blvd, Spice District, SD 67890", 
+        "contactPerson": "Ahmed Hassan",
+        "website": "www.fancylebanese.com"
+      },
+      "businessInfo": {
+        "leadTimeDays": 2,
+        "minimumOrder": 50,
+        "paymentTerms": "Net 20",
+        "deliveryDays": ["Wednesday", "Saturday"],
+        "notes": "Specialty Middle Eastern and Mediterranean foods"
+      },
+      "status": "active",
+      "createdAt": "2024-01-01",
+      "updatedAt": "2024-01-01"
+    }
+  },
+  "inventory": [
+    {"id": "item-001", "name": "Burger buns", "supplierId": "cash-n-carry", "onHandQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 24, "pricing": {"unitCost": 0.50, "casePrice": 12.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-002", "name": "Ketchup gallon", "supplierId": "cash-n-carry", "onHandQty": 0, "quantity": 0, "uom": "gallons", "caseQty": 4, "pricing": {"unitCost": 8.00, "casePrice": 32.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-003", "name": "Mustard Sauce", "supplierId": "cash-n-carry", "onHandQty": 0, "quantity": 0, "uom": "bottles", "caseQty": 12, "pricing": {"unitCost": 3.50, "casePrice": 42.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-004", "name": "Pickles for burger", "supplierId": "cash-n-carry", "onHandQty": 0, "quantity": 0, "uom": "jars", "caseQty": 6, "pricing": {"unitCost": 4.00, "casePrice": 24.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-005", "name": "Beef tubes", "supplierId": "cash-n-carry", "onHandQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 10, "pricing": {"unitCost": 6.50, "casePrice": 65.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-006", "name": "Brothers pepperoni", "supplierId": "cash-n-carry", "onHandQty": 0, "quantity": 0, "uom": "packages", "caseQty": 12, "pricing": {"unitCost": 5.00, "casePrice": 60.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-007", "name": "Potato wedges", "supplierId": "cash-n-carry", "onHandQty": 0, "quantity": 0, "uom": "bags", "caseQty": 6, "pricing": {"unitCost": 4.50, "casePrice": 27.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    
+    {"id": "item-008", "name": "Green peppers", "supplierId": "veggie-order", "onHandQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 25, "pricing": {"unitCost": 2.00, "casePrice": 50.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-009", "name": "Tomatoes", "supplierId": "veggie-order", "onHandQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 20, "pricing": {"unitCost": 2.50, "casePrice": 50.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-010", "name": "Mushrooms", "supplierId": "veggie-order", "onHandQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 5, "pricing": {"unitCost": 4.00, "casePrice": 20.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-011", "name": "Onions", "supplierId": "veggie-order", "onHandQty": 0, "quantity": 0, "uom": "lbs", "caseQty": 50, "pricing": {"unitCost": 1.50, "casePrice": 75.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-012", "name": "Cucumbers", "supplierId": "veggie-order", "onHandQty": 0, "quantity": 0, "uom": "pieces", "caseQty": 12, "pricing": {"unitCost": 1.00, "casePrice": 12.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-013", "name": "Lettuce Iceberg", "supplierId": "veggie-order", "onHandQty": 0, "quantity": 0, "uom": "heads", "caseQty": 24, "pricing": {"unitCost": 1.25, "casePrice": 30.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""},
+    {"id": "item-014", "name": "Romanian lettuce", "supplierId": "veggie-order", "onHandQty": 0, "quantity": 0, "uom": "heads", "caseQty": 24, "pricing": {"unitCost": 1.50, "casePrice": 36.00, "lastUpdated": "2024-01-01"}, "updatedAt": ""}
   ]
 }

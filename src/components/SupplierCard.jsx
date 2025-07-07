@@ -1,18 +1,18 @@
 import { useState } from "react";
 
-export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddItem }) {
+export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddItem, supplierId }) {
   const [newItem, setNewItem] = useState("");
   const [isExpanded, setIsExpanded] = useState(true);
 
-  const handleFieldChange = (index, field, value) => {
+  const handleFieldChange = (itemId, field, value) => {
     const parsedValue = field === 'uom' ? value : (value === "" ? 0 : Math.max(0, parseInt(value, 10) || 0));
-    onUpdateQuantity(supplier, index, field, parsedValue);
+    onUpdateQuantity(itemId, field, parsedValue);
   };
 
   const handleAddItem = () => {
     const trimmedItem = newItem.trim();
     if (trimmedItem && trimmedItem.length > 0) {
-      onAddItem(supplier, trimmedItem);
+      onAddItem(supplierId, trimmedItem);
       setNewItem("");
     }
   };
@@ -260,9 +260,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                 {items.map((item, index) => {
                   const stockStatus = getStockStatus(item.onHandQty || 0);
                   return (
-                    <tr key={index} className="hover:bg-slate-700/50 transition-colors">
+                    <tr key={item.id || index} className="hover:bg-slate-700/50 transition-colors">
                       <td className="px-4 py-3 text-sm text-slate-300 font-mono">
-                        INV-{String(index + 1).padStart(3, '0')}
+                        {item.id ? item.id.toUpperCase() : `INV-${String(index + 1).padStart(3, '0')}`}
                       </td>
                       <td className="px-4 py-3 min-w-0">
                         <div className="flex items-center">
@@ -271,6 +271,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                             <div className="text-sm font-medium text-slate-100 truncate">{item.name}</div>
                             <div className="text-xs text-slate-400">
                               {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
+                              {item.pricing && (
+                                <span className="ml-2">• Unit: ${(item.pricing.unitCost || 0).toFixed(2)}</span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -280,7 +283,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           type="number"
                           min="0"
                           value={item.onHandQty || ''}
-                          onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'onHandQty', e.target.value)}
                           className={`w-16 px-2 py-1 text-sm text-center rounded border focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                             stockStatus.status === 'out' ? 'border-red-600 bg-red-900/20 text-red-300' :
                             stockStatus.status === 'low' ? 'border-orange-600 bg-orange-900/20 text-orange-300' :
@@ -294,7 +297,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           type="number"
                           min="0"
                           value={item.quantity || ''}
-                          onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'quantity', e.target.value)}
                           className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="0"
                         />
@@ -304,7 +307,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           type="number"
                           min="1"
                           value={item.caseQty || ''}
-                          onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'caseQty', e.target.value)}
                           className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="1"
                         />
@@ -312,7 +315,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                       <td className="px-4 py-3 text-center">
                         <select
                           value={item.uom || 'pieces'}
-                          onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'uom', e.target.value)}
                           className="w-20 px-1 py-1 text-xs border border-slate-600 bg-slate-700 text-slate-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
                           <option value="pieces">pieces</option>
@@ -357,7 +360,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                 const stockStatus = getStockStatus(item.onHandQty || 0);
                 return (
                   <div
-                    key={index}
+                    key={item.id || index}
                     className={`p-4 rounded-lg border ${stockStatus.bg} ${stockStatus.border}`}
                   >
                     {/* Mobile Item Header */}
@@ -367,7 +370,10 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         <div className="min-w-0 flex-1">
                           <h4 className="text-base font-semibold text-slate-100 leading-tight">{item.name}</h4>
                           <p className="text-xs text-slate-400 mt-1">
-                            ID: INV-{String(index + 1).padStart(3, '0')} • {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
+                            ID: {item.id ? item.id.toUpperCase() : `INV-${String(index + 1).padStart(3, '0')}`} • {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
+                            {item.pricing && (
+                              <span className="block">Unit Cost: ${(item.pricing.unitCost || 0).toFixed(2)}</span>
+                            )}
                           </p>
                         </div>
                       </div>
@@ -394,7 +400,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           type="number"
                           min="0"
                           value={item.onHandQty || ''}
-                          onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'onHandQty', e.target.value)}
                           className={`w-full px-4 py-4 text-lg border-2 rounded-xl text-center font-bold focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation ${
                             stockStatus.status === 'out' ? 'border-red-600 bg-red-900/20 text-red-300' :
                             stockStatus.status === 'low' ? 'border-orange-600 bg-orange-900/20 text-orange-300' :
@@ -409,7 +415,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           type="number"
                           min="0"
                           value={item.quantity || ''}
-                          onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'quantity', e.target.value)}
                           className="w-full px-4 py-4 text-lg border-2 border-slate-600 bg-slate-700 rounded-xl text-center font-bold text-slate-100 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                           placeholder="0"
                         />
@@ -420,7 +426,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           type="number"
                           min="1"
                           value={item.caseQty || ''}
-                          onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'caseQty', e.target.value)}
                           className="w-full px-4 py-4 text-lg border-2 border-slate-600 bg-slate-700 rounded-xl text-center font-bold text-slate-100 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                           placeholder="1"
                         />
@@ -429,7 +435,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         <label className="block text-sm font-medium text-slate-300 mb-2">📏 UOM</label>
                         <select
                           value={item.uom || 'pieces'}
-                          onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
+                          onChange={(e) => handleFieldChange(item.id, 'uom', e.target.value)}
                           className="w-full px-4 py-4 text-base border-2 border-slate-600 bg-slate-700 text-slate-100 rounded-xl focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                         >
                           <option value="pieces">Pieces</option>

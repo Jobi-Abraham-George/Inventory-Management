@@ -251,10 +251,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Name ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Category ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Quantity ↑↓</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Build ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Order ↑↓</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">UOM ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Status</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Location</th>
                 </tr>
               </thead>
               <tbody className="bg-slate-800 divide-y divide-slate-700">
@@ -299,21 +298,35 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         <input
                           type="number"
                           min="0"
-                          value={item.buildQty || ''}
-                          onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                          className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="0"
-                        />
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <input
-                          type="number"
-                          min="0"
                           value={item.quantity || ''}
                           onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
                           className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="0"
                         />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <select
+                          value={item.uom || 'pieces'}
+                          onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
+                          className="w-20 px-1 py-1 text-xs border border-slate-600 bg-slate-700 text-slate-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="pieces">pieces</option>
+                          <option value="lbs">lbs</option>
+                          <option value="gallons">gallons</option>
+                          <option value="bottles">bottles</option>
+                          <option value="jars">jars</option>
+                          <option value="packages">packages</option>
+                          <option value="bags">bags</option>
+                          <option value="heads">heads</option>
+                          <option value="cans">cans</option>
+                          <option value="containers">containers</option>
+                          <option value="trays">trays</option>
+                          <option value="sheets">sheets</option>
+                          <option value="sets">sets</option>
+                          <option value="loaves">loaves</option>
+                          <option value="cases">cases</option>
+                          <option value="rolls">rolls</option>
+                        </select>
                       </td>
                       <td className="px-4 py-3 text-center">
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
@@ -324,14 +337,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           {stockStatus.status === 'out' ? 'Out of Stock' :
                            stockStatus.status === 'low' ? 'Low Stock' : 'In Stock'}
                         </span>
-                      </td>
-                      <td className="px-4 py-3 text-sm text-slate-300 text-center">
-                        {supplier === 'Cash n Carry' ? 'Warehouse A' :
-                         supplier === 'Veggie Order' ? 'Cold Storage' :
-                         supplier === 'Saputo Order' ? 'Dry Storage' :
-                         supplier === 'Sysco Order' ? 'Freezer A' :
-                         supplier === 'Maroon Order' ? 'Packaging Area' :
-                         'Prep Kitchen'}
                       </td>
                     </tr>
                   );

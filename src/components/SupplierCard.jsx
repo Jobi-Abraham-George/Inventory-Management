@@ -249,9 +249,10 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                 <tr className="bg-slate-750 border-b border-slate-600">
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">ID ↑↓</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Name ↑↓</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Category ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Quantity ↑↓</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Build ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Order ↑↓</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Case ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">UOM ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Status</th>
                 </tr>
@@ -276,11 +277,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-slate-700 text-slate-300">
-                          {item.uom || 'pieces'}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
                         <input
                           type="number"
                           min="0"
@@ -298,10 +294,30 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         <input
                           type="number"
                           min="0"
+                          value={item.buildQty || ''}
+                          onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
+                          className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="0"
+                        />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <input
+                          type="number"
+                          min="0"
                           value={item.quantity || ''}
                           onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
                           className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           placeholder="0"
+                        />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <input
+                          type="number"
+                          min="1"
+                          value={item.caseQty || ''}
+                          onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
+                          className="w-16 px-2 py-1 text-sm text-center rounded border border-slate-600 bg-slate-700 text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="1"
                         />
                       </td>
                       <td className="px-4 py-3 text-center">

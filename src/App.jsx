@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import SupplierCard from "./components/SupplierCard";
 import SupplierManagement from "./components/SupplierManagement";
+import Dashboard from "./components/Dashboard";
 import SearchAndFilters from "./components/SearchAndFilters";
 import initialData from "./data/initialData.json";
 
@@ -18,6 +19,94 @@ export default function App() {
   const [selectedUOMs, setSelectedUOMs] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
+  // Migration function to convert old data structure to new structure
+  const migrateOldData = (oldData) => {
+    console.log("Migrating old data structure to new format...");
+    
+    // Create default suppliers
+    const suppliers = {
+      "cash-n-carry": {
+        "id": "cash-n-carry",
+        "name": "Cash n Carry",
+        "contactInfo": {
+          "phone": "(555) 123-4567",
+          "email": "orders@cashncarry.com",
+          "address": "1234 Wholesale Ave, Food City, FC 12345",
+          "contactPerson": "Mike Johnson",
+          "website": "www.cashncarry.com"
+        },
+        "businessInfo": {
+          "leadTimeDays": 2,
+          "minimumOrder": 100,
+          "paymentTerms": "Net 30",
+          "deliveryDays": ["Monday", "Wednesday", "Friday"],
+          "notes": "Bulk food supplier specializing in restaurant supplies"
+        },
+        "status": "active",
+        "createdAt": "2024-01-01",
+        "updatedAt": "2024-01-01"
+      }
+    };
+
+    // Create inventory array from old structure
+    const inventory = [];
+    let itemIdCounter = 1;
+
+    Object.entries(oldData).forEach(([supplierName, items]) => {
+      // Create supplier ID
+      const supplierId = supplierName.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      
+      // Add supplier if not exists
+      if (!suppliers[supplierId]) {
+        suppliers[supplierId] = {
+          id: supplierId,
+          name: supplierName,
+          contactInfo: {
+            phone: "",
+            email: "",
+            address: "",
+            contactPerson: "",
+            website: ""
+          },
+          businessInfo: {
+            leadTimeDays: 2,
+            minimumOrder: 100,
+            paymentTerms: "Net 30",
+            deliveryDays: [],
+            notes: ""
+          },
+          status: "active",
+          createdAt: new Date().toLocaleDateString(),
+          updatedAt: new Date().toLocaleDateString()
+        };
+      }
+
+      // Convert items
+      if (Array.isArray(items)) {
+        items.forEach(item => {
+          inventory.push({
+            id: `item-${String(itemIdCounter).padStart(3, '0')}`,
+            name: item.name,
+            supplierId: supplierId,
+            onHandQty: item.onHandQty || 0,
+            quantity: item.quantity || 0,
+            uom: item.uom || "pieces",
+            caseQty: item.caseQty || 1,
+            pricing: {
+              unitCost: Math.random() * 10, // Random pricing for migration
+              casePrice: Math.random() * 50,
+              lastUpdated: new Date().toLocaleDateString()
+            },
+            updatedAt: item.updatedAt || ""
+          });
+          itemIdCounter++;
+        });
+      }
+    });
+
+    return { suppliers, inventory };
+  };
+
   // Initialize data from localStorage or use initial data
   useEffect(() => {
     try {
@@ -25,12 +114,40 @@ export default function App() {
       if (saved) {
         const parsedData = JSON.parse(saved);
         if (typeof parsedData === 'object' && parsedData !== null && parsedData.suppliers && parsedData.inventory) {
+          // New data structure
           setData(parsedData);
+        } else if (typeof parsedData === 'object' && parsedData !== null) {
+          // Check if it's old data structure (object with supplier names as keys)
+          const isOldStructure = Object.keys(parsedData).some(key => 
+            Array.isArray(parsedData[key]) && 
+            parsedData[key].length > 0 && 
+            parsedData[key][0].hasOwnProperty('name')
+          );
+          
+          if (isOldStructure) {
+            // Migrate old data
+            const migratedData = migrateOldData(parsedData);
+            setData(migratedData);
+            console.log("Data migration completed successfully!");
+          } else {
+            throw new Error("Unknown data format in localStorage");
+          }
         } else {
           throw new Error("Invalid data format in localStorage");
         }
       } else {
-        setData(initialData);
+        // Check for old inventory key
+        const oldSaved = localStorage.getItem("inventory");
+        if (oldSaved) {
+          const oldParsedData = JSON.parse(oldSaved);
+          const migratedData = migrateOldData(oldParsedData);
+          setData(migratedData);
+          // Remove old key
+          localStorage.removeItem("inventory");
+          console.log("Migrated from old 'inventory' localStorage key!");
+        } else {
+          setData(initialData);
+        }
       }
     } catch (error) {
       console.error("Error loading data from localStorage:", error);
@@ -709,11 +826,7 @@ export default function App() {
           )}
 
           {activeTab === 'dashboard' && (
-            <div className="py-8 text-center">
-              <div className="text-6xl mb-4">📊</div>
-              <h3 className="text-xl font-semibold text-slate-300 mb-2">Dashboard Coming Soon</h3>
-              <p className="text-slate-400">Advanced analytics and reporting features will be available here.</p>
-            </div>
+            <Dashboard data={data} />
           )}
 
           {activeTab === 'orders' && (

@@ -114,112 +114,164 @@ export default function App() {
   const filteredInventory = useMemo(() => {
     if (!inventory) return {};
 
-    let filtered = { ...inventory };
+    try {
+      let filtered = { ...inventory };
 
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = Object.keys(filtered).reduce((acc, supplier) => {
-        const filteredItems = filtered[supplier].filter(item =>
-          item.name.toLowerCase().includes(query) ||
-          supplier.toLowerCase().includes(query) ||
-          item.uom.toLowerCase().includes(query)
-        );
-        if (filteredItems.length > 0) {
-          acc[supplier] = filteredItems;
-        }
-        return acc;
-      }, {});
+      // Apply search filter
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        filtered = Object.keys(filtered).reduce((acc, supplier) => {
+          // Make sure we have items for this supplier
+          if (!filtered[supplier] || !Array.isArray(filtered[supplier])) {
+            return acc;
+          }
+          
+          const filteredItems = filtered[supplier].filter(item => {
+            // Safety check for item properties
+            if (!item) return false;
+            
+            const itemName = (item.name || '').toLowerCase();
+            const supplierName = (supplier || '').toLowerCase();
+            const itemUom = (item.uom || '').toLowerCase();
+            
+            return itemName.includes(query) ||
+                   supplierName.includes(query) ||
+                   itemUom.includes(query);
+          });
+          
+          if (filteredItems.length > 0) {
+            acc[supplier] = filteredItems;
+          }
+          return acc;
+        }, {});
+      }
+
+      // Apply supplier filter
+      if (selectedSuppliers.length > 0) {
+        filtered = Object.keys(filtered).reduce((acc, supplier) => {
+          if (selectedSuppliers.includes(supplier) && filtered[supplier]) {
+            acc[supplier] = filtered[supplier];
+          }
+          return acc;
+        }, {});
+      }
+
+      // Apply status filter
+      if (selectedStatuses.length > 0) {
+        filtered = Object.keys(filtered).reduce((acc, supplier) => {
+          if (!filtered[supplier] || !Array.isArray(filtered[supplier])) {
+            return acc;
+          }
+          
+          const filteredItems = filtered[supplier].filter(item => {
+            if (!item) return false;
+            const status = getStockStatus(item.onHandQty || 0);
+            return selectedStatuses.includes(status);
+          });
+          
+          if (filteredItems.length > 0) {
+            acc[supplier] = filteredItems;
+          }
+          return acc;
+        }, {});
+      }
+
+      // Apply UOM filter
+      if (selectedUOMs.length > 0) {
+        filtered = Object.keys(filtered).reduce((acc, supplier) => {
+          if (!filtered[supplier] || !Array.isArray(filtered[supplier])) {
+            return acc;
+          }
+          
+          const filteredItems = filtered[supplier].filter(item => {
+            if (!item) return false;
+            return selectedUOMs.includes(item.uom || 'pieces');
+          });
+          
+          if (filteredItems.length > 0) {
+            acc[supplier] = filteredItems;
+          }
+          return acc;
+        }, {});
+      }
+
+      return filtered;
+    } catch (error) {
+      console.error("Error in filtering logic:", error);
+      // Return original inventory if filtering fails
+      return inventory || {};
     }
-
-    // Apply supplier filter
-    if (selectedSuppliers.length > 0) {
-      filtered = Object.keys(filtered).reduce((acc, supplier) => {
-        if (selectedSuppliers.includes(supplier)) {
-          acc[supplier] = filtered[supplier];
-        }
-        return acc;
-      }, {});
-    }
-
-    // Apply status filter
-    if (selectedStatuses.length > 0) {
-      filtered = Object.keys(filtered).reduce((acc, supplier) => {
-        const filteredItems = filtered[supplier].filter(item => {
-          const status = getStockStatus(item.onHandQty || 0);
-          return selectedStatuses.includes(status);
-        });
-        if (filteredItems.length > 0) {
-          acc[supplier] = filteredItems;
-        }
-        return acc;
-      }, {});
-    }
-
-    // Apply UOM filter
-    if (selectedUOMs.length > 0) {
-      filtered = Object.keys(filtered).reduce((acc, supplier) => {
-        const filteredItems = filtered[supplier].filter(item =>
-          selectedUOMs.includes(item.uom || 'pieces')
-        );
-        if (filteredItems.length > 0) {
-          acc[supplier] = filteredItems;
-        }
-        return acc;
-      }, {});
-    }
-
-    return filtered;
   }, [inventory, searchQuery, selectedSuppliers, selectedStatuses, selectedUOMs]);
 
   // Quick filter functions
   const applyQuickFilter = (filterType) => {
-    setSelectedSuppliers([]);
-    setSelectedUOMs([]);
-    setSearchQuery("");
-    
-    switch (filterType) {
-      case 'low-stock':
-        setSelectedStatuses(['low']);
-        break;
-      case 'out-of-stock':
-        setSelectedStatuses(['out']);
-        break;
-      case 'in-stock':
-        setSelectedStatuses(['medium', 'good']);
-        break;
-      case 'recently-updated':
-        // Filter items updated today
-        setSelectedStatuses([]);
-        // This would need additional logic for date filtering
-        break;
-      case 'clear':
-        setSelectedStatuses([]);
-        break;
+    try {
+      setSelectedSuppliers([]);
+      setSelectedUOMs([]);
+      setSearchQuery("");
+      
+      switch (filterType) {
+        case 'low-stock':
+          setSelectedStatuses(['low']);
+          break;
+        case 'out-of-stock':
+          setSelectedStatuses(['out']);
+          break;
+        case 'in-stock':
+          setSelectedStatuses(['medium', 'good']);
+          break;
+        case 'recently-updated':
+          setSelectedStatuses([]);
+          break;
+        case 'clear':
+          setSelectedStatuses([]);
+          break;
+        default:
+          break;
+      }
+    } catch (error) {
+      console.error("Error in quick filter:", error);
+      setError("Failed to apply filter. Please try again.");
     }
   };
 
   // Get statistics for current view
   const getFilteredStats = () => {
-    const suppliers = Object.keys(filteredInventory).length;
-    const items = Object.values(filteredInventory).reduce((total, items) => total + items.length, 0);
-    const onHand = Object.values(filteredInventory).reduce((total, items) => 
-      total + items.reduce((sum, item) => sum + (item.onHandQty || 0), 0), 0
-    );
-    const toBuild = Object.values(filteredInventory).reduce((total, items) => 
-      total + items.reduce((sum, item) => sum + (item.buildQty || 0), 0), 0
-    );
-    const toOrder = Object.values(filteredInventory).reduce((total, items) => 
-      total + items.reduce((sum, item) => sum + (item.quantity || 0), 0), 0
-    );
-    const lowStock = Object.values(filteredInventory).reduce((total, items) => 
-      total + items.filter(item => (item.onHandQty || 0) <= 5).length, 0
-    );
-    const outOfStock = Object.values(filteredInventory).reduce((total, items) => 
-      total + items.filter(item => (item.onHandQty || 0) === 0).length, 0
-    );
+    try {
+      if (!filteredInventory || Object.keys(filteredInventory).length === 0) {
+        return { suppliers: 0, items: 0, onHand: 0, toBuild: 0, toOrder: 0, lowStock: 0, outOfStock: 0 };
+      }
 
-    return { suppliers, items, onHand, toBuild, toOrder, lowStock, outOfStock };
+      const suppliers = Object.keys(filteredInventory).length;
+      const items = Object.values(filteredInventory).reduce((total, items) => {
+        return total + (Array.isArray(items) ? items.length : 0);
+      }, 0);
+      const onHand = Object.values(filteredInventory).reduce((total, items) => {
+        if (!Array.isArray(items)) return total;
+        return total + items.reduce((sum, item) => sum + (item?.onHandQty || 0), 0);
+      }, 0);
+      const toBuild = Object.values(filteredInventory).reduce((total, items) => {
+        if (!Array.isArray(items)) return total;
+        return total + items.reduce((sum, item) => sum + (item?.buildQty || 0), 0);
+      }, 0);
+      const toOrder = Object.values(filteredInventory).reduce((total, items) => {
+        if (!Array.isArray(items)) return total;
+        return total + items.reduce((sum, item) => sum + (item?.quantity || 0), 0);
+      }, 0);
+      const lowStock = Object.values(filteredInventory).reduce((total, items) => {
+        if (!Array.isArray(items)) return total;
+        return total + items.filter(item => item && (item.onHandQty || 0) <= 5).length;
+      }, 0);
+      const outOfStock = Object.values(filteredInventory).reduce((total, items) => {
+        if (!Array.isArray(items)) return total;
+        return total + items.filter(item => item && (item.onHandQty || 0) === 0).length;
+      }, 0);
+
+      return { suppliers, items, onHand, toBuild, toOrder, lowStock, outOfStock };
+    } catch (error) {
+      console.error("Error calculating filtered stats:", error);
+      return { suppliers: 0, items: 0, onHand: 0, toBuild: 0, toOrder: 0, lowStock: 0, outOfStock: 0 };
+    }
   };
 
   const getTotalItems = () => {

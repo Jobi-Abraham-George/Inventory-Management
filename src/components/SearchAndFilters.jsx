@@ -20,41 +20,79 @@ export default function SearchAndFilters({
 
   // Extract available UOMs from inventory
   useEffect(() => {
-    if (inventory) {
-      const uoms = new Set();
-      Object.values(inventory).forEach(items => {
-        items.forEach(item => {
-          if (item.uom) {
-            uoms.add(item.uom);
+    try {
+      if (inventory) {
+        const uoms = new Set();
+        Object.values(inventory).forEach(items => {
+          if (Array.isArray(items)) {
+            items.forEach(item => {
+              if (item && item.uom) {
+                uoms.add(item.uom);
+              }
+            });
           }
         });
-      });
-      setAvailableUOMs(Array.from(uoms).sort());
+        setAvailableUOMs(Array.from(uoms).sort());
+      }
+    } catch (error) {
+      console.error("Error extracting UOMs:", error);
+      setAvailableUOMs([]);
     }
   }, [inventory]);
 
   const handleSupplierToggle = (supplier) => {
-    setSelectedSuppliers(prev => 
-      prev.includes(supplier) 
-        ? prev.filter(s => s !== supplier)
-        : [...prev, supplier]
-    );
+    try {
+      setSelectedSuppliers(prev => 
+        prev.includes(supplier) 
+          ? prev.filter(s => s !== supplier)
+          : [...prev, supplier]
+      );
+    } catch (error) {
+      console.error("Error toggling supplier:", error);
+    }
   };
 
   const handleStatusToggle = (status) => {
-    setSelectedStatuses(prev => 
-      prev.includes(status) 
-        ? prev.filter(s => s !== status)
-        : [...prev, status]
-    );
+    try {
+      setSelectedStatuses(prev => 
+        prev.includes(status) 
+          ? prev.filter(s => s !== status)
+          : [...prev, status]
+      );
+    } catch (error) {
+      console.error("Error toggling status:", error);
+    }
   };
 
   const handleUOMToggle = (uom) => {
-    setSelectedUOMs(prev => 
-      prev.includes(uom) 
-        ? prev.filter(u => u !== uom)
-        : [...prev, uom]
-    );
+    try {
+      setSelectedUOMs(prev => 
+        prev.includes(uom) 
+          ? prev.filter(u => u !== uom)
+          : [...prev, uom]
+      );
+    } catch (error) {
+      console.error("Error toggling UOM:", error);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    try {
+      const value = e.target.value;
+      // Sanitize the input to prevent any issues
+      const sanitizedValue = value.replace(/[<>]/g, '');
+      setSearchQuery(sanitizedValue);
+    } catch (error) {
+      console.error("Error handling search change:", error);
+    }
+  };
+
+  const handleSearchClear = () => {
+    try {
+      setSearchQuery("");
+    } catch (error) {
+      console.error("Error clearing search:", error);
+    }
   };
 
   const statusOptions = [
@@ -145,12 +183,12 @@ export default function SearchAndFilters({
           type="text"
           placeholder="Search items, suppliers, or units..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleSearchChange}
           className="w-full pl-10 pr-4 py-3 text-base border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent touch-manipulation"
         />
         {searchQuery && (
           <button
-            onClick={() => setSearchQuery("")}
+            onClick={handleSearchClear}
             className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 touch-manipulation"
           >
             <span className="text-lg">✕</span>
@@ -303,7 +341,7 @@ export default function SearchAndFilters({
               <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-700">
                 Search: "{searchQuery}"
                 <button
-                  onClick={() => setSearchQuery("")}
+                  onClick={handleSearchClear}
                   className="ml-1 text-blue-500 hover:text-blue-700"
                 >
                   ✕

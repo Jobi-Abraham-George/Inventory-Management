@@ -8,6 +8,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('inventory');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Search and Filter States
   const [searchQuery, setSearchQuery] = useState("");
@@ -351,10 +352,20 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100">
-      {/* Sidebar Navigation */}
-      <div className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-800 border-r border-slate-700">
+      {/* Mobile Sidebar Backdrop */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar Navigation - Mobile Responsive */}
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-slate-800 border-r border-slate-700 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
         {/* Logo/Brand */}
-        <div className="flex items-center px-6 py-4 border-b border-slate-700">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-700">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
               <span className="text-white font-bold text-sm">🍽️</span>
@@ -364,22 +375,33 @@ export default function App() {
               <p className="text-xs text-slate-400">Restaurant System</p>
             </div>
           </div>
+          
+          {/* Mobile Close Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="lg:hidden p-2 rounded-lg hover:bg-slate-700 transition-colors"
+          >
+            <span className="text-slate-400 text-lg">✕</span>
+          </button>
         </div>
 
         {/* Navigation Menu */}
-        <nav className="mt-6 px-3">
+        <nav className="mt-6 px-3 pb-20">
           <div className="space-y-1">
             {navigationItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setIsMobileMenuOpen(false); // Close mobile menu on selection
+                }}
+                className={`w-full flex items-center px-3 py-3 text-sm font-medium rounded-lg transition-colors touch-manipulation ${
                   item.active
                     ? 'bg-blue-600 text-white'
                     : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                 }`}
               >
-                <span className="mr-3">{item.icon}</span>
+                <span className="mr-3 text-lg">{item.icon}</span>
                 {item.label}
               </button>
             ))}
@@ -400,37 +422,50 @@ export default function App() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="pl-64">
-        {/* Header */}
-        <header className="bg-slate-800 border-b border-slate-700 px-6 py-4">
+      {/* Main Content - Responsive */}
+      <div className="lg:pl-64">
+        {/* Mobile Header */}
+        <header className="bg-slate-800 border-b border-slate-700 px-4 lg:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-white">Inventory Management</h1>
-              <p className="text-slate-400 text-sm">Manage your inventory items, track stock levels, and handle orders.</p>
+            {/* Mobile Menu Button */}
+            <div className="flex items-center">
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="lg:hidden p-2 rounded-lg hover:bg-slate-700 transition-colors mr-3"
+              >
+                <span className="text-slate-300 text-xl">☰</span>
+              </button>
+              
+              <div>
+                <h1 className="text-xl lg:text-2xl font-semibold text-white">Inventory Management</h1>
+                <p className="text-slate-400 text-sm hidden sm:block">Manage your inventory items, track stock levels, and handle orders.</p>
+              </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <button className="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors">
+            
+            {/* Header Actions - Mobile Responsive */}
+            <div className="flex items-center space-x-2 lg:space-x-3">
+              <button className="hidden sm:flex px-3 lg:px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm">
                 Export
               </button>
-              <button className="px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors">
+              <button className="hidden sm:flex px-3 lg:px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm">
                 Import
               </button>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                + Add Item
+              <button className="px-3 lg:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm touch-manipulation">
+                <span className="hidden sm:inline">+ Add Item</span>
+                <span className="sm:hidden">+</span>
               </button>
             </div>
           </div>
         </header>
 
-        {/* Alert Banner */}
+        {/* Alert Banner - Mobile Responsive */}
         {(stats.lowStock > 0 || stats.outOfStock > 0) && (
-          <div className="bg-yellow-900/50 border border-yellow-600 mx-6 mt-4 p-4 rounded-lg">
-            <div className="flex items-center">
-              <span className="text-yellow-500 mr-2">⚠️</span>
+          <div className="bg-yellow-900/50 border border-yellow-600 mx-4 lg:mx-6 mt-4 p-3 lg:p-4 rounded-lg">
+            <div className="flex items-start lg:items-center">
+              <span className="text-yellow-500 mr-2 flex-shrink-0">⚠️</span>
               <div className="text-yellow-200">
                 <span className="font-medium">Attention needed</span>
-                <p className="text-sm text-yellow-300">
+                <p className="text-sm text-yellow-300 mt-1 lg:mt-0">
                   {stats.lowStock} items are low in stock and {stats.outOfStock} item{stats.outOfStock !== 1 ? 's' : ''} {stats.outOfStock === 1 ? 'is' : 'are'} out of stock. Consider reordering soon.
                 </p>
               </div>
@@ -438,8 +473,8 @@ export default function App() {
           </div>
         )}
 
-        {/* Search and Filters */}
-        <div className="px-6 py-4">
+        {/* Search and Filters - Mobile Responsive */}
+        <div className="px-4 lg:px-6 py-4">
           <SearchAndFilters
             inventory={inventory}
             searchQuery={searchQuery}
@@ -457,21 +492,21 @@ export default function App() {
           />
         </div>
 
-        {/* Content Area */}
-        <div className="px-6 pb-6">
-          {/* Results Summary */}
+        {/* Content Area - Mobile Responsive */}
+        <div className="px-4 lg:px-6 pb-6">
+          {/* Results Summary - Mobile Responsive */}
           {hasActiveFilters && (
             <div className="mb-4 bg-blue-900/50 border border-blue-600 rounded-lg p-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="text-sm text-blue-200">
                   <span className="font-medium">
                     Showing {stats.items} items from {stats.suppliers} suppliers
                   </span>
-                  {searchQuery && <span> matching "{searchQuery}"</span>}
+                  {searchQuery && <span className="block sm:inline"> matching "{searchQuery}"</span>}
                 </div>
                 <button
                   onClick={() => applyQuickFilter('clear')}
-                  className="text-blue-400 hover:text-blue-300 text-sm font-medium"
+                  className="text-blue-400 hover:text-blue-300 text-sm font-medium self-start sm:self-auto touch-manipulation"
                 >
                   Clear filters
                 </button>
@@ -479,7 +514,7 @@ export default function App() {
             </div>
           )}
 
-          {/* Supplier Cards */}
+          {/* Supplier Cards - Mobile Optimized */}
           {Object.keys(filteredInventory).length === 0 ? (
             <div className="text-center py-12">
               <div className="text-4xl mb-3">
@@ -488,20 +523,20 @@ export default function App() {
               <div className="text-lg font-semibold text-slate-300 mb-1">
                 {hasActiveFilters ? 'No items match your filters' : 'No suppliers found'}
               </div>
-              <div className="text-sm text-slate-400">
+              <div className="text-sm text-slate-400 px-4">
                 {hasActiveFilters ? 'Try adjusting your search or filter criteria' : 'Add some suppliers to get started'}
               </div>
               {hasActiveFilters && (
                 <button
                   onClick={() => applyQuickFilter('clear')}
-                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors touch-manipulation"
                 >
                   Clear all filters
                 </button>
               )}
             </div>
           ) : (
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               {Object.keys(filteredInventory).map((supplier) => (
                 <SupplierCard
                   key={supplier}

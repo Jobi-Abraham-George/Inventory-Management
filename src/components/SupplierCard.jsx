@@ -342,38 +342,50 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
 
           {/* Mobile Card Layout */}
           <div className="block lg:hidden">
-            <div className="space-y-3 p-4">
+            <div className="space-y-4 p-4">
               {items.map((item, index) => {
                 const stockStatus = getStockStatus(item.onHandQty || 0);
                 return (
                   <div
                     key={index}
-                    className={`p-4 rounded-lg border-2 ${stockStatus.bg} ${stockStatus.border}`}
+                    className={`p-4 rounded-lg border ${stockStatus.bg} ${stockStatus.border}`}
                   >
-                    {/* Item Header */}
-                    <div className="flex items-center justify-between mb-3">
+                    {/* Mobile Item Header */}
+                    <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center flex-1 min-w-0">
-                        <span className="text-lg mr-2 flex-shrink-0">{getItemEmoji(item.name)}</span>
+                        <span className="text-2xl mr-3 flex-shrink-0">{getItemEmoji(item.name)}</span>
                         <div className="min-w-0 flex-1">
-                          <h4 className="text-sm font-semibold text-slate-100">{item.name}</h4>
-                          <p className="text-xs text-slate-400">
-                            {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
+                          <h4 className="text-base font-semibold text-slate-100 leading-tight">{item.name}</h4>
+                          <p className="text-xs text-slate-400 mt-1">
+                            ID: INV-{String(index + 1).padStart(3, '0')} • {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
                           </p>
                         </div>
                       </div>
-                      <div className={`w-3 h-3 rounded-full ${stockStatus.dot} ml-2`}></div>
+                      <div className={`w-4 h-4 rounded-full ${stockStatus.dot} ml-3 flex-shrink-0`}></div>
                     </div>
                     
-                    {/* Mobile Input Grid */}
-                    <div className="grid grid-cols-2 gap-3 mb-3">
+                    {/* Status Badge */}
+                    <div className="mb-4">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                        stockStatus.status === 'out' ? 'bg-red-600 text-red-100' :
+                        stockStatus.status === 'low' ? 'bg-orange-600 text-orange-100' :
+                        'bg-green-600 text-green-100'
+                      }`}>
+                        {stockStatus.status === 'out' ? 'Out of Stock' :
+                         stockStatus.status === 'low' ? 'Low Stock' : 'In Stock'}
+                      </span>
+                    </div>
+                    
+                    {/* Mobile Input Grid - Optimized for Touch */}
+                    <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1">On Hand</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">📊 On Hand</label>
                         <input
                           type="number"
                           min="0"
                           value={item.onHandQty || ''}
                           onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
-                          className={`w-full px-3 py-3 text-base border-2 rounded-lg text-center font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          className={`w-full px-4 py-4 text-lg border-2 rounded-xl text-center font-bold focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation ${
                             stockStatus.status === 'out' ? 'border-red-600 bg-red-900/20 text-red-300' :
                             stockStatus.status === 'low' ? 'border-orange-600 bg-orange-900/20 text-orange-300' :
                             'border-slate-600 bg-slate-700 text-slate-100'
@@ -382,47 +394,47 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1">Build</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">🔨 Build</label>
                         <input
                           type="number"
                           min="0"
                           value={item.buildQty || ''}
                           onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                          className="w-full px-3 py-3 text-base border-2 border-slate-600 bg-slate-700 rounded-lg text-center font-semibold text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-4 text-lg border-2 border-slate-600 bg-slate-700 rounded-xl text-center font-bold text-slate-100 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                           placeholder="0"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1">Order</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">📦 Order</label>
                         <input
                           type="number"
                           min="0"
                           value={item.quantity || ''}
                           onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
-                          className="w-full px-3 py-3 text-base border-2 border-slate-600 bg-slate-700 rounded-lg text-center font-semibold text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-4 text-lg border-2 border-slate-600 bg-slate-700 rounded-xl text-center font-bold text-slate-100 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                           placeholder="0"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-slate-400 mb-1">Case</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">📁 Case</label>
                         <input
                           type="number"
                           min="1"
                           value={item.caseQty || ''}
                           onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
-                          className="w-full px-3 py-3 text-base border-2 border-slate-600 bg-slate-700 rounded-lg text-center font-semibold text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-4 text-lg border-2 border-slate-600 bg-slate-700 rounded-xl text-center font-bold text-slate-100 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                           placeholder="1"
                         />
                       </div>
                     </div>
                     
-                    {/* UOM Selector */}
+                    {/* UOM Selector - Mobile Optimized */}
                     <div>
-                      <label className="block text-xs font-medium text-slate-400 mb-1">Unit of Measure</label>
+                      <label className="block text-sm font-medium text-slate-300 mb-2">📏 Unit of Measure</label>
                       <select
                         value={item.uom || 'pieces'}
                         onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
-                        className="w-full px-3 py-3 text-base border-2 border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-4 text-base border-2 border-slate-600 bg-slate-700 text-slate-100 rounded-xl focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                       >
                         <option value="pieces">Pieces</option>
                         <option value="lbs">Pounds</option>
@@ -442,30 +454,48 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         <option value="rolls">Rolls</option>
                       </select>
                     </div>
+                    
+                    {/* Location Info - Mobile */}
+                    <div className="mt-4 p-3 bg-slate-700/50 rounded-lg">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-slate-400">Location:</span>
+                        <span className="text-slate-200 font-medium">
+                          {supplier === 'Cash n Carry' ? 'Warehouse A' :
+                           supplier === 'Veggie Order' ? 'Cold Storage' :
+                           supplier === 'Saputo Order' ? 'Dry Storage' :
+                           supplier === 'Sysco Order' ? 'Freezer A' :
+                           supplier === 'Maroon Order' ? 'Packaging Area' :
+                           'Prep Kitchen'}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
           
-          {/* Add New Item - Professional Styling */}
+          {/* Add New Item - Mobile Optimized */}
           <div className="bg-slate-700 px-4 py-4 border-t border-slate-600">
-            <div className="flex space-x-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <input
                 type="text"
                 placeholder="Add new item..."
                 value={newItem}
                 onChange={(e) => setNewItem(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="flex-1 px-4 py-2 text-sm border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-1 px-4 py-3 lg:py-2 text-base lg:text-sm border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                 maxLength={100}
               />
               <button
                 onClick={handleAddItem}
                 disabled={!newItem.trim()}
-                className="px-6 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-6 py-3 lg:py-2 bg-blue-600 text-white text-base lg:text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-3 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors touch-manipulation min-h-[44px]"
               >
-                + Add Item
+                <span className="flex items-center justify-center">
+                  <span className="mr-2">+</span>
+                  <span>Add Item</span>
+                </span>
               </button>
             </div>
           </div>

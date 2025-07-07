@@ -220,17 +220,17 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
 
       {/* Professional Table Layout */}
       {isExpanded && (
-        <div className="overflow-x-auto">
-          <table className="w-full table-fixed min-w-[800px]">
+        <div className="overflow-hidden">
+          <table className="w-full table-fixed">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="w-2/5 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                <th className="w-16 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">On Hand</th>
-                <th className="w-16 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Build</th>
-                <th className="w-16 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                <th className="w-20 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">UOM</th>
-                <th className="w-16 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Case</th>
-                <th className="w-20 px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="w-5/12 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Hand</th>
+                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Build</th>
+                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">UOM</th>
+                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Case</th>
+                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -252,13 +252,13 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     </td>
                     
                     {/* On Hand */}
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-2 py-2 text-center">
                       <input
                         type="number"
                         min="0"
                         value={item.onHandQty || ''}
                         onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
-                        className={`w-full px-2 py-1 text-sm border rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                        className={`w-full px-1 py-1 text-sm border rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 ${
                           stockStatus.status === 'out' ? 'border-red-300 bg-red-50 text-red-700' :
                           stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50 text-orange-700' :
                           'border-gray-300 bg-white text-gray-900'
@@ -268,80 +268,71 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     </td>
                     
                     {/* Build */}
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-2 py-2 text-center">
                       <input
                         type="number"
                         min="0"
                         value={item.buildQty || ''}
                         onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full px-1 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
                         placeholder="0"
                       />
                     </td>
                     
                     {/* Order */}
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-2 py-2 text-center">
                       <input
                         type="number"
                         min="0"
                         value={item.quantity || ''}
                         onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full px-1 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
                         placeholder="0"
                       />
                     </td>
                     
                     {/* UOM */}
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-2 py-2 text-center">
                       <select
                         value={item.uom || 'pieces'}
                         onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
                         className="w-full px-1 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                       >
-                        <option value="pieces">pieces</option>
+                        <option value="pieces">pcs</option>
                         <option value="lbs">lbs</option>
-                        <option value="gallons">gallons</option>
-                        <option value="bottles">bottles</option>
-                        <option value="jars">jars</option>
-                        <option value="packages">packages</option>
-                        <option value="bags">bags</option>
-                        <option value="heads">heads</option>
-                        <option value="cans">cans</option>
-                        <option value="containers">containers</option>
-                        <option value="trays">trays</option>
-                        <option value="sheets">sheets</option>
-                        <option value="sets">sets</option>
-                        <option value="loaves">loaves</option>
-                        <option value="cases">cases</option>
-                        <option value="rolls">rolls</option>
+                        <option value="gallons">gal</option>
+                        <option value="bottles">btl</option>
+                        <option value="jars">jar</option>
+                        <option value="packages">pkg</option>
+                        <option value="bags">bag</option>
+                        <option value="heads">hd</option>
+                        <option value="cans">can</option>
+                        <option value="containers">cnt</option>
+                        <option value="trays">tray</option>
+                        <option value="sheets">sht</option>
+                        <option value="sets">set</option>
+                        <option value="loaves">loaf</option>
+                        <option value="cases">case</option>
+                        <option value="rolls">roll</option>
                       </select>
                     </td>
                     
                     {/* Case */}
-                    <td className="px-3 py-2 text-center">
+                    <td className="px-2 py-2 text-center">
                       <input
                         type="number"
                         min="1"
                         value={item.caseQty || ''}
                         onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
-                        className="w-full px-2 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full px-1 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
                         placeholder="1"
                       />
                     </td>
                     
                     {/* Status */}
-                    <td className="px-3 py-2 text-center">
-                      <div className="flex items-center justify-center space-x-1">
+                    <td className="px-2 py-2 text-center">
+                      <div className="flex items-center justify-center">
                         <div className={`w-3 h-3 rounded-full ${stockStatus.dot}`}></div>
-                        <span className={`text-xs font-medium ${
-                          stockStatus.status === 'out' ? 'text-red-600' :
-                          stockStatus.status === 'low' ? 'text-orange-600' :
-                          'text-green-600'
-                        }`}>
-                          {stockStatus.status === 'out' ? 'OUT' :
-                           stockStatus.status === 'low' ? 'LOW' :
-                           'OK'}
-                        </span>
                       </div>
                     </td>
                   </tr>

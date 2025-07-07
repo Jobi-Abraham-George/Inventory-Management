@@ -249,7 +249,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                 <tr className="bg-slate-750 border-b border-slate-600">
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">ID ↑↓</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Name ↑↓</th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Quantity ↑↓</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">On Hand ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Order ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Case ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">UOM ↑↓</th>

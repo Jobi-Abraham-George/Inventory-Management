@@ -161,7 +161,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50">
       {/* Professional Header */}
       <div className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-3 sm:px-4">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
@@ -211,7 +211,7 @@ export default function App() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="w-full px-3 sm:px-4 py-4">
         {/* Error Alert */}
         {error && (
           <div className="mb-4 bg-red-50 border border-red-200 rounded-md p-3 flex items-center justify-between">
@@ -291,7 +291,7 @@ export default function App() {
             <div className="text-sm text-gray-500">Add some suppliers to get started</div>
           </div>
         ) : (
-          <div className="grid gap-4 lg:grid-cols-1 xl:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2">
             {Object.keys(inventory).map((supplier) => (
               <SupplierCard
                 key={supplier}
@@ -307,7 +307,7 @@ export default function App() {
 
       {/* Compact Footer */}
       <div className="bg-white border-t border-gray-200 mt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div className="w-full px-3 sm:px-4 py-3">
           <div className="text-center text-gray-500 text-xs">
             <p>© 2024 Restaurant Inventory Management System • Built with React</p>
           </div>

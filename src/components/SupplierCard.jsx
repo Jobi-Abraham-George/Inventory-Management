@@ -184,19 +184,19 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
       {/* Professional Header */}
-      <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+      <div className="bg-gray-50 px-3 py-2 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center">
-                <span className="text-white text-sm">{getSupplierIcon(supplier)}</span>
+              <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+                <span className="text-white text-xs">{getSupplierIcon(supplier)}</span>
               </div>
             </div>
-            <div className="ml-3">
+            <div className="ml-2">
               <h3 className="text-sm font-semibold text-gray-900">{supplier}</h3>
-              <div className="flex items-center space-x-4 text-xs text-gray-500">
+              <div className="flex items-center space-x-3 text-xs text-gray-500">
                 <span>{totalItems} items</span>
-                <span>{totalStock} total stock</span>
+                <span>{totalStock} stock</span>
                 {lowStockItems > 0 && (
                   <span className="text-orange-600 font-medium">{lowStockItems} low</span>
                 )}
@@ -220,17 +220,17 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
 
       {/* Professional Table Layout */}
       {isExpanded && (
-        <div className="overflow-hidden">
-          <table className="w-full table-fixed">
+        <div className="w-full">
+          <table className="w-full table-auto">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="w-5/12 px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Hand</th>
-                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Build</th>
-                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
-                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">UOM</th>
-                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Case</th>
-                <th className="w-1/12 px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-2 py-1 text-left text-xs font-medium text-gray-500 uppercase">Item</th>
+                <th className="px-1 py-1 text-center text-xs font-medium text-gray-500 uppercase">Hand</th>
+                <th className="px-1 py-1 text-center text-xs font-medium text-gray-500 uppercase">Build</th>
+                <th className="px-1 py-1 text-center text-xs font-medium text-gray-500 uppercase">Order</th>
+                <th className="px-1 py-1 text-center text-xs font-medium text-gray-500 uppercase">UOM</th>
+                <th className="px-1 py-1 text-center text-xs font-medium text-gray-500 uppercase">Case</th>
+                <th className="px-1 py-1 text-center text-xs font-medium text-gray-500 uppercase">Status</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -239,9 +239,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                 return (
                   <tr key={index} className="hover:bg-gray-50 transition-colors">
                     {/* Item Name */}
-                    <td className="px-3 py-2">
+                    <td className="px-2 py-1 min-w-0">
                       <div className="flex items-center">
-                        <span className="text-sm mr-2 flex-shrink-0">{getItemEmoji(item.name)}</span>
+                        <span className="text-sm mr-1 flex-shrink-0">{getItemEmoji(item.name)}</span>
                         <div className="min-w-0 flex-1">
                           <div className="text-sm font-medium text-gray-900">{item.name}</div>
                           <div className="text-xs text-gray-500">
@@ -252,13 +252,13 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     </td>
                     
                     {/* On Hand */}
-                    <td className="px-2 py-2 text-center">
+                    <td className="px-1 py-1 text-center w-16">
                       <input
                         type="number"
                         min="0"
                         value={item.onHandQty || ''}
                         onChange={(e) => handleFieldChange(index, 'onHandQty', e.target.value)}
-                        className={`w-full px-1 py-1 text-sm border rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 ${
+                        className={`w-12 px-1 py-1 text-xs border rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500 ${
                           stockStatus.status === 'out' ? 'border-red-300 bg-red-50 text-red-700' :
                           stockStatus.status === 'low' ? 'border-orange-300 bg-orange-50 text-orange-700' :
                           'border-gray-300 bg-white text-gray-900'
@@ -268,35 +268,35 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     </td>
                     
                     {/* Build */}
-                    <td className="px-2 py-2 text-center">
+                    <td className="px-1 py-1 text-center w-16">
                       <input
                         type="number"
                         min="0"
                         value={item.buildQty || ''}
                         onChange={(e) => handleFieldChange(index, 'buildQty', e.target.value)}
-                        className="w-full px-1 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-12 px-1 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
                         placeholder="0"
                       />
                     </td>
                     
                     {/* Order */}
-                    <td className="px-2 py-2 text-center">
+                    <td className="px-1 py-1 text-center w-16">
                       <input
                         type="number"
                         min="0"
                         value={item.quantity || ''}
                         onChange={(e) => handleFieldChange(index, 'quantity', e.target.value)}
-                        className="w-full px-1 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-12 px-1 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
                         placeholder="0"
                       />
                     </td>
                     
                     {/* UOM */}
-                    <td className="px-2 py-2 text-center">
+                    <td className="px-1 py-1 text-center w-16">
                       <select
                         value={item.uom || 'pieces'}
                         onChange={(e) => handleFieldChange(index, 'uom', e.target.value)}
-                        className="w-full px-1 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-12 px-0 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                       >
                         <option value="pieces">pcs</option>
                         <option value="lbs">lbs</option>
@@ -318,21 +318,21 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     </td>
                     
                     {/* Case */}
-                    <td className="px-2 py-2 text-center">
+                    <td className="px-1 py-1 text-center w-16">
                       <input
                         type="number"
                         min="1"
                         value={item.caseQty || ''}
                         onChange={(e) => handleFieldChange(index, 'caseQty', e.target.value)}
-                        className="w-full px-1 py-1 text-sm border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-12 px-1 py-1 text-xs border border-gray-300 rounded text-center focus:outline-none focus:ring-1 focus:ring-blue-500"
                         placeholder="1"
                       />
                     </td>
                     
                     {/* Status */}
-                    <td className="px-2 py-2 text-center">
+                    <td className="px-1 py-1 text-center w-12">
                       <div className="flex items-center justify-center">
-                        <div className={`w-3 h-3 rounded-full ${stockStatus.dot}`}></div>
+                        <div className={`w-2 h-2 rounded-full ${stockStatus.dot}`}></div>
                       </div>
                     </td>
                   </tr>
@@ -342,8 +342,8 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
           </table>
           
           {/* Add New Item */}
-          <div className="bg-gray-50 px-4 py-3 border-t border-gray-200">
-            <div className="flex items-center space-x-3">
+          <div className="bg-gray-50 px-3 py-2 border-t border-gray-200">
+            <div className="flex items-center space-x-2">
               <div className="flex-1">
                 <input
                   type="text"
@@ -351,14 +351,14 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                   value={newItem}
                   onChange={(e) => setNewItem(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
                   maxLength={100}
                 />
               </div>
               <button
                 onClick={handleAddItem}
                 disabled={!newItem.trim()}
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Add Item
               </button>

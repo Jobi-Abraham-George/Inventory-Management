@@ -78,8 +78,10 @@ export default function SearchAndFilters({
   const handleSearchChange = (e) => {
     try {
       const value = e.target.value;
+      console.log("Search input changed:", value); // Debug logging
       // Sanitize the input to prevent any issues
       const sanitizedValue = value.replace(/[<>]/g, '');
+      console.log("Sanitized search value:", sanitizedValue); // Debug logging
       setSearchQuery(sanitizedValue);
     } catch (error) {
       console.error("Error handling search change:", error);
@@ -88,6 +90,7 @@ export default function SearchAndFilters({
 
   const handleSearchClear = () => {
     try {
+      console.log("Clearing search"); // Debug logging
       setSearchQuery("");
     } catch (error) {
       console.error("Error clearing search:", error);
@@ -103,13 +106,13 @@ export default function SearchAndFilters({
 
   return (
     <div className="mb-4 space-y-4">
-      {/* Horizontal Field Reference Guide */}
+      {/* HORIZONTAL Field Reference Guide - TEST UPDATE */}
       <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
         <div className="mb-3">
           <div className="flex items-center mb-3">
             <span className="text-blue-600 mr-2">📋</span>
             <span className="text-sm font-semibold text-gray-900">Field Reference Guide</span>
-            <span className="ml-2 text-xs text-gray-500">(Quick Reference)</span>
+            <span className="ml-2 text-xs text-green-500 font-medium">(Horizontal Layout Active)</span>
           </div>
           
           {/* Horizontal Field Layout */}

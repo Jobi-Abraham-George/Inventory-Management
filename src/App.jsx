@@ -109,6 +109,14 @@ export default function App() {
 
   // Initialize data from localStorage or use initial data
   useEffect(() => {
+    // Add global debug helper
+    window.clearInvotraqData = () => {
+      localStorage.removeItem('inventory');
+      localStorage.removeItem('inventoryData');
+      window.location.reload();
+    };
+    console.log('🔧 Debug: Run window.clearInvotraqData() to clear all data and refresh');
+    
     try {
       const saved = localStorage.getItem("inventoryData");
       if (saved) {

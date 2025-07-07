@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Invotraq Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #1e293b;
+            color: #e2e8f0;
+        }
+        .container {
+            background-color: #334155;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .button {
+            background-color: #3b82f6;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .button:hover {
+            background-color: #2563eb;
+        }
+        .success {
+            background-color: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Invotraq Storage Cleaner</h1>
+        <p>This tool will clear all localStorage data for your Invotraq application.</p>
+        <p><strong>Warning:</strong> This will remove all your current inventory data!</p>
+        
+        <button class="button" onclick="clearStorage()">Clear Storage & Refresh</button>
+        
+        <div id="success" class="success">
+            ✅ Storage cleared successfully! The application will start fresh.
+        </div>
+        
+        <hr style="margin: 30px 0; border-color: #64748b;">
+        
+        <h3>Manual Steps:</h3>
+        <ol style="text-align: left; max-width: 400px; margin: 0 auto;">
+            <li>Open your browser's Developer Tools (F12)</li>
+            <li>Go to the "Application" or "Storage" tab</li>
+            <li>Find "Local Storage" → your domain</li>
+            <li>Delete keys: "inventory" and "inventoryData"</li>
+            <li>Refresh the page</li>
+        </ol>
+    </div>
+
+    <script>
+        function clearStorage() {
+            try {
+                // Clear all localStorage
+                localStorage.clear();
+                
+                // Show success message
+                document.getElementById('success').style.display = 'block';
+                
+                // Wait 2 seconds then redirect to main app
+                setTimeout(() => {
+                    // Try to go back to the main app
+                    if (window.location.port === '5173') {
+                        window.location.href = '/';
+                    } else {
+                        alert('Storage cleared! Please go back to your Invotraq application and refresh.');
+                    }
+                }, 2000);
+                
+            } catch (error) {
+                alert('Error clearing storage: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

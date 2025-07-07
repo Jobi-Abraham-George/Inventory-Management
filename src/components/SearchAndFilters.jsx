@@ -112,7 +112,6 @@ export default function SearchAndFilters({
           <div className="flex items-center mb-3">
             <span className="text-blue-600 mr-2">📋</span>
             <span className="text-sm font-semibold text-gray-900">Field Reference Guide</span>
-            <span className="ml-2 text-xs text-green-500 font-medium">(Horizontal Layout Active)</span>
           </div>
           
           {/* Horizontal Field Layout */}

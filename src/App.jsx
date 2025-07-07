@@ -1,11 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import SupplierCard from "./components/SupplierCard";
+import SearchAndFilters from "./components/SearchAndFilters";
 import initialData from "./data/initialData.json";
 
 export default function App() {
   const [inventory, setInventory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Search and Filter States
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSuppliers, setSelectedSuppliers] = useState([]);
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [selectedUOMs, setSelectedUOMs] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   // Initialize inventory from localStorage or use initial data
   useEffect(() => {
@@ -94,6 +102,126 @@ export default function App() {
     }
   };
 
+  // Helper function to get stock status
+  const getStockStatus = (onHandQty) => {
+    if (onHandQty === 0) return 'out';
+    if (onHandQty <= 5) return 'low';
+    if (onHandQty <= 20) return 'medium';
+    return 'good';
+  };
+
+  // Filter and search logic
+  const filteredInventory = useMemo(() => {
+    if (!inventory) return {};
+
+    let filtered = { ...inventory };
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = Object.keys(filtered).reduce((acc, supplier) => {
+        const filteredItems = filtered[supplier].filter(item =>
+          item.name.toLowerCase().includes(query) ||
+          supplier.toLowerCase().includes(query) ||
+          item.uom.toLowerCase().includes(query)
+        );
+        if (filteredItems.length > 0) {
+          acc[supplier] = filteredItems;
+        }
+        return acc;
+      }, {});
+    }
+
+    // Apply supplier filter
+    if (selectedSuppliers.length > 0) {
+      filtered = Object.keys(filtered).reduce((acc, supplier) => {
+        if (selectedSuppliers.includes(supplier)) {
+          acc[supplier] = filtered[supplier];
+        }
+        return acc;
+      }, {});
+    }
+
+    // Apply status filter
+    if (selectedStatuses.length > 0) {
+      filtered = Object.keys(filtered).reduce((acc, supplier) => {
+        const filteredItems = filtered[supplier].filter(item => {
+          const status = getStockStatus(item.onHandQty || 0);
+          return selectedStatuses.includes(status);
+        });
+        if (filteredItems.length > 0) {
+          acc[supplier] = filteredItems;
+        }
+        return acc;
+      }, {});
+    }
+
+    // Apply UOM filter
+    if (selectedUOMs.length > 0) {
+      filtered = Object.keys(filtered).reduce((acc, supplier) => {
+        const filteredItems = filtered[supplier].filter(item =>
+          selectedUOMs.includes(item.uom || 'pieces')
+        );
+        if (filteredItems.length > 0) {
+          acc[supplier] = filteredItems;
+        }
+        return acc;
+      }, {});
+    }
+
+    return filtered;
+  }, [inventory, searchQuery, selectedSuppliers, selectedStatuses, selectedUOMs]);
+
+  // Quick filter functions
+  const applyQuickFilter = (filterType) => {
+    setSelectedSuppliers([]);
+    setSelectedUOMs([]);
+    setSearchQuery("");
+    
+    switch (filterType) {
+      case 'low-stock':
+        setSelectedStatuses(['low']);
+        break;
+      case 'out-of-stock':
+        setSelectedStatuses(['out']);
+        break;
+      case 'in-stock':
+        setSelectedStatuses(['medium', 'good']);
+        break;
+      case 'recently-updated':
+        // Filter items updated today
+        setSelectedStatuses([]);
+        // This would need additional logic for date filtering
+        break;
+      case 'clear':
+        setSelectedStatuses([]);
+        break;
+    }
+  };
+
+  // Get statistics for current view
+  const getFilteredStats = () => {
+    const suppliers = Object.keys(filteredInventory).length;
+    const items = Object.values(filteredInventory).reduce((total, items) => total + items.length, 0);
+    const onHand = Object.values(filteredInventory).reduce((total, items) => 
+      total + items.reduce((sum, item) => sum + (item.onHandQty || 0), 0), 0
+    );
+    const toBuild = Object.values(filteredInventory).reduce((total, items) => 
+      total + items.reduce((sum, item) => sum + (item.buildQty || 0), 0), 0
+    );
+    const toOrder = Object.values(filteredInventory).reduce((total, items) => 
+      total + items.reduce((sum, item) => sum + (item.quantity || 0), 0), 0
+    );
+    const lowStock = Object.values(filteredInventory).reduce((total, items) => 
+      total + items.filter(item => (item.onHandQty || 0) <= 5).length, 0
+    );
+    const outOfStock = Object.values(filteredInventory).reduce((total, items) => 
+      total + items.filter(item => (item.onHandQty || 0) === 0).length, 0
+    );
+
+    return { suppliers, items, onHand, toBuild, toOrder, lowStock, outOfStock };
+  };
+
   const getTotalItems = () => {
     if (!inventory) return 0;
     return Object.values(inventory).reduce((total, items) => total + items.length, 0);
@@ -149,13 +277,16 @@ export default function App() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-4xl mb-3">�</div>
+          <div className="text-4xl mb-3">📦</div>
           <div className="text-lg font-semibold text-red-600">Failed to load inventory data</div>
           <div className="text-sm text-gray-600 mt-1">Please refresh the page and try again</div>
         </div>
       </div>
     );
   }
+
+  const stats = getFilteredStats();
+  const hasActiveFilters = searchQuery || selectedSuppliers.length > 0 || selectedStatuses.length > 0 || selectedUOMs.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -176,36 +307,46 @@ export default function App() {
                   <p className="text-xs text-gray-500 hidden sm:block">Restaurant Supply Chain System</p>
                 </div>
               </div>
+              
+              {/* Filter Toggle Button */}
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className={`p-2 rounded-lg transition-colors touch-manipulation ${
+                  hasActiveFilters ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'
+                }`}
+              >
+                <span className="text-lg">🔍</span>
+              </button>
             </div>
             
-            {/* Mobile Stats Grid */}
+            {/* Mobile Stats Grid - Show filtered stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4">
               <div className="bg-gray-50 rounded-lg p-2 text-center">
-                <div className="text-lg font-semibold text-gray-900">{Object.keys(inventory).length}</div>
+                <div className="text-lg font-semibold text-gray-900">{stats.suppliers}</div>
                 <div className="text-xs text-gray-500">Suppliers</div>
               </div>
               <div className="bg-gray-50 rounded-lg p-2 text-center">
-                <div className="text-lg font-semibold text-gray-900">{getTotalItems()}</div>
+                <div className="text-lg font-semibold text-gray-900">{stats.items}</div>
                 <div className="text-xs text-gray-500">Items</div>
               </div>
               <div className="bg-blue-50 rounded-lg p-2 text-center">
-                <div className="text-lg font-semibold text-blue-600">{getTotalOnHandStock()}</div>
+                <div className="text-lg font-semibold text-blue-600">{stats.onHand}</div>
                 <div className="text-xs text-gray-500">On Hand</div>
               </div>
               <div className="bg-green-50 rounded-lg p-2 text-center">
-                <div className="text-lg font-semibold text-green-600">{getTotalBuildQty()}</div>
+                <div className="text-lg font-semibold text-green-600">{stats.toBuild}</div>
                 <div className="text-xs text-gray-500">To Build</div>
               </div>
               <div className="bg-purple-50 rounded-lg p-2 text-center">
-                <div className="text-lg font-semibold text-purple-600">{getTotalOrderQty()}</div>
+                <div className="text-lg font-semibold text-purple-600">{stats.toOrder}</div>
                 <div className="text-xs text-gray-500">To Order</div>
               </div>
               <div className="bg-orange-50 rounded-lg p-2 text-center">
-                <div className="text-lg font-semibold text-orange-600">{getLowStockItems()}</div>
+                <div className="text-lg font-semibold text-orange-600">{stats.lowStock}</div>
                 <div className="text-xs text-gray-500">Low Stock</div>
               </div>
               <div className="bg-red-50 rounded-lg p-2 text-center">
-                <div className="text-lg font-semibold text-red-600">{getOutOfStockItems()}</div>
+                <div className="text-lg font-semibold text-red-600">{stats.outOfStock}</div>
                 <div className="text-xs text-gray-500">Out of Stock</div>
               </div>
             </div>
@@ -237,53 +378,71 @@ export default function App() {
           </div>
         )}
 
-        {/* Mobile Field Legend - Collapsible */}
-        <div className="mb-4 bg-white rounded-lg shadow-sm border border-gray-200">
-          <div className="p-3">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">📋 Quick Reference</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 text-xs">
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <span className="text-gray-700"><strong>Hand:</strong> Current stock</span>
+        {/* Search and Filters Component */}
+        <SearchAndFilters
+          inventory={inventory}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          selectedSuppliers={selectedSuppliers}
+          setSelectedSuppliers={setSelectedSuppliers}
+          selectedStatuses={selectedStatuses}
+          setSelectedStatuses={setSelectedStatuses}
+          selectedUOMs={selectedUOMs}
+          setSelectedUOMs={setSelectedUOMs}
+          showFilters={showFilters}
+          setShowFilters={setShowFilters}
+          applyQuickFilter={applyQuickFilter}
+          hasActiveFilters={hasActiveFilters}
+        />
+
+        {/* Results Summary */}
+        {hasActiveFilters && (
+          <div className="mb-4 bg-blue-50 border border-blue-200 rounded-lg p-3">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-blue-800">
+                <span className="font-medium">
+                  Showing {stats.items} items from {stats.suppliers} suppliers
+                </span>
+                {searchQuery && <span> matching "{searchQuery}"</span>}
               </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <span className="text-gray-700"><strong>Build:</strong> Need to make</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                <span className="text-gray-700"><strong>Order:</strong> Need to buy</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
-                <span className="text-gray-700"><strong>UOM:</strong> Unit type</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                <span className="text-gray-700"><strong>Case:</strong> Pack size</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                <span className="text-gray-700"><strong>Status:</strong> Stock level</span>
-              </div>
+              <button
+                onClick={() => applyQuickFilter('clear')}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium touch-manipulation"
+              >
+                Clear filters
+              </button>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Supplier Cards - Mobile Optimized */}
-        {Object.keys(inventory).length === 0 ? (
+        {Object.keys(filteredInventory).length === 0 ? (
           <div className="text-center py-12">
-            <div className="text-4xl mb-3">📦</div>
-            <div className="text-lg font-semibold text-gray-700 mb-1">No suppliers found</div>
-            <div className="text-sm text-gray-500">Add some suppliers to get started</div>
+            <div className="text-4xl mb-3">
+              {hasActiveFilters ? '🔍' : '📦'}
+            </div>
+            <div className="text-lg font-semibold text-gray-700 mb-1">
+              {hasActiveFilters ? 'No items match your filters' : 'No suppliers found'}
+            </div>
+            <div className="text-sm text-gray-500">
+              {hasActiveFilters ? 'Try adjusting your search or filter criteria' : 'Add some suppliers to get started'}
+            </div>
+            {hasActiveFilters && (
+              <button
+                onClick={() => applyQuickFilter('clear')}
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors touch-manipulation"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         ) : (
           <div className="space-y-4">
-            {Object.keys(inventory).map((supplier) => (
+            {Object.keys(filteredInventory).map((supplier) => (
               <SupplierCard
                 key={supplier}
                 supplier={supplier}
-                items={inventory[supplier]}
+                items={filteredInventory[supplier]}
                 onUpdateQuantity={updateQuantity}
                 onAddItem={addItem}
               />
@@ -297,7 +456,7 @@ export default function App() {
         <div className="w-full px-3 py-4">
           <div className="text-center text-gray-500 text-xs">
             <p>© 2024 Restaurant Inventory System</p>
-            <p className="mt-1">Optimized for Mobile</p>
+            <p className="mt-1">Optimized for Mobile • Enhanced with Search & Filters</p>
           </div>
         </div>
       </div>

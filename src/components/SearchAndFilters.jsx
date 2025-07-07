@@ -16,7 +16,6 @@ export default function SearchAndFilters({
   hasActiveFilters
 }) {
   const [availableUOMs, setAvailableUOMs] = useState([]);
-  const [showFieldGuide, setShowFieldGuide] = useState(false);
 
   // Extract available UOMs from inventory
   useEffect(() => {
@@ -104,74 +103,66 @@ export default function SearchAndFilters({
 
   return (
     <div className="mb-4 space-y-4">
-      {/* Field Reference Guide */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-        <button
-          onClick={() => setShowFieldGuide(!showFieldGuide)}
-          className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-gray-50 transition-colors touch-manipulation"
-        >
-          <div className="flex items-center">
+      {/* Horizontal Field Reference Guide */}
+      <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
+        <div className="mb-3">
+          <div className="flex items-center mb-3">
             <span className="text-blue-600 mr-2">📋</span>
             <span className="text-sm font-semibold text-gray-900">Field Reference Guide</span>
-            <span className="ml-2 text-xs text-gray-500">(New users - click to learn)</span>
+            <span className="ml-2 text-xs text-gray-500">(Quick Reference)</span>
           </div>
-          <span className={`transform transition-transform duration-200 text-sm text-gray-400 ${showFieldGuide ? 'rotate-180' : ''}`}>
-            ▼
-          </span>
-        </button>
-        
-        {showFieldGuide && (
-          <div className="px-4 pb-4 border-t border-gray-100">
-            <div className="mt-3">
-              <h4 className="text-sm font-semibold text-gray-900 mb-3">New Multi-Field Structure:</h4>
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3 p-3 bg-blue-50 rounded-lg">
-                  <span className="text-lg flex-shrink-0">📊</span>
-                  <div>
-                    <div className="font-semibold text-gray-900 text-sm">On Hand Qty</div>
-                    <div className="text-xs text-gray-600">Current stock quantity in your inventory</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 p-3 bg-green-50 rounded-lg">
-                  <span className="text-lg flex-shrink-0">🔨</span>
-                  <div>
-                    <div className="font-semibold text-gray-900 text-sm">Build Qty</div>
-                    <div className="text-xs text-gray-600">Quantities you need to build/produce</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 p-3 bg-purple-50 rounded-lg">
-                  <span className="text-lg flex-shrink-0">📦</span>
-                  <div>
-                    <div className="font-semibold text-gray-900 text-sm">Order Qty</div>
-                    <div className="text-xs text-gray-600">Quantities you need to order from suppliers</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <span className="text-lg flex-shrink-0">📏</span>
-                  <div>
-                    <div className="font-semibold text-gray-900 text-sm">UOM</div>
-                    <div className="text-xs text-gray-600">Unit of Measure (pieces, lbs, gallons, bottles, etc.)</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3 p-3 bg-indigo-50 rounded-lg">
-                  <span className="text-lg flex-shrink-0">📁</span>
-                  <div>
-                    <div className="font-semibold text-gray-900 text-sm">Case Qty</div>
-                    <div className="text-xs text-gray-600">Case quantities for packaging/ordering</div>
-                  </div>
-                </div>
+          
+          {/* Horizontal Field Layout */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-3">
+            <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded-md">
+              <span className="text-sm flex-shrink-0">📊</span>
+              <div className="min-w-0">
+                <div className="font-semibold text-gray-900 text-xs">On Hand</div>
+                <div className="text-xs text-gray-600 truncate">Current stock</div>
               </div>
-              <div className="mt-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                <div className="flex items-start space-x-2">
-                  <span className="text-yellow-600 text-sm">💡</span>
-                  <div className="text-xs text-yellow-800">
-                    <strong>Pro Tip:</strong> Use the search and filters below to quickly find specific items, suppliers, or stock levels. This helps you manage inventory efficiently during busy restaurant operations.
-                  </div>
-                </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 p-2 bg-green-50 rounded-md">
+              <span className="text-sm flex-shrink-0">🔨</span>
+              <div className="min-w-0">
+                <div className="font-semibold text-gray-900 text-xs">Build</div>
+                <div className="text-xs text-gray-600 truncate">Need to make</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 p-2 bg-purple-50 rounded-md">
+              <span className="text-sm flex-shrink-0">📦</span>
+              <div className="min-w-0">
+                <div className="font-semibold text-gray-900 text-xs">Order</div>
+                <div className="text-xs text-gray-600 truncate">Need to buy</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-md">
+              <span className="text-sm flex-shrink-0">📏</span>
+              <div className="min-w-0">
+                <div className="font-semibold text-gray-900 text-xs">UOM</div>
+                <div className="text-xs text-gray-600 truncate">Unit type</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2 p-2 bg-indigo-50 rounded-md">
+              <span className="text-sm flex-shrink-0">📁</span>
+              <div className="min-w-0">
+                <div className="font-semibold text-gray-900 text-xs">Case</div>
+                <div className="text-xs text-gray-600 truncate">Pack size</div>
               </div>
             </div>
           </div>
-        )}
+          
+          {/* Pro Tip - Horizontal */}
+          <div className="flex items-start space-x-2 p-2 bg-yellow-50 rounded-md border border-yellow-200">
+            <span className="text-yellow-600 text-sm flex-shrink-0">💡</span>
+            <div className="text-xs text-yellow-800">
+              <strong>Pro Tip:</strong> Use the search and filters below to quickly find specific items, suppliers, or stock levels during busy restaurant operations.
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Search Bar */}

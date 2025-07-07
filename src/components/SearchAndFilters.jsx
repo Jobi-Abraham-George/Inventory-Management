@@ -115,28 +115,28 @@ export default function SearchAndFilters({
           </div>
           
           {/* Horizontal Field Layout - Mobile Responsive */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 lg:gap-3 mb-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-3 mb-3">
             <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-blue-900/30 rounded-md">
               <span className="text-sm flex-shrink-0">📊</span>
               <div className="min-w-0">
                 <div className="font-semibold text-slate-100 text-xs">On Hand</div>
-                <div className="text-xs text-slate-400 truncate hidden sm:block">Current stock</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-green-900/30 rounded-md">
-              <span className="text-sm flex-shrink-0">🔨</span>
-              <div className="min-w-0">
-                <div className="font-semibold text-slate-100 text-xs">Build</div>
-                <div className="text-xs text-slate-400 truncate hidden sm:block">Need to make</div>
+                <div className="text-xs text-slate-400 truncate">Current stock</div>
               </div>
             </div>
             
             <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-purple-900/30 rounded-md">
-              <span className="text-sm flex-shrink-0">📦</span>
+              <span className="text-sm flex-shrink-0">�</span>
               <div className="min-w-0">
                 <div className="font-semibold text-slate-100 text-xs">Order</div>
-                <div className="text-xs text-slate-400 truncate hidden sm:block">Need to buy</div>
+                <div className="text-xs text-slate-400 truncate">Need to buy</div>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-indigo-900/30 rounded-md">
+              <span className="text-sm flex-shrink-0">�</span>
+              <div className="min-w-0">
+                <div className="font-semibold text-slate-100 text-xs">Case</div>
+                <div className="text-xs text-slate-400 truncate">Pack size</div>
               </div>
             </div>
             
@@ -144,15 +144,7 @@ export default function SearchAndFilters({
               <span className="text-sm flex-shrink-0">📏</span>
               <div className="min-w-0">
                 <div className="font-semibold text-slate-100 text-xs">UOM</div>
-                <div className="text-xs text-slate-400 truncate hidden sm:block">Unit type</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-indigo-900/30 rounded-md col-span-2 sm:col-span-1">
-              <span className="text-sm flex-shrink-0">📁</span>
-              <div className="min-w-0">
-                <div className="font-semibold text-slate-100 text-xs">Case</div>
-                <div className="text-xs text-slate-400 truncate hidden sm:block">Pack size</div>
+                <div className="text-xs text-slate-400 truncate">Unit type</div>
               </div>
             </div>
           </div>

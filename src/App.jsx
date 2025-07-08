@@ -710,9 +710,15 @@ export default function App() {
 
         {/* Content Area - Mobile Responsive */}
         <div className="px-4 lg:px-6 pb-6">
-
-          
           {/* Render content based on active tab */}
+          {activeTab === 'dashboard' && (
+            <div className="py-4">
+              <ErrorBoundary>
+                <Dashboard data={data} />
+              </ErrorBoundary>
+            </div>
+          )}
+
           {activeTab === 'inventory' && (
             <>
               {/* Search and Filters - Mobile Responsive */}
@@ -872,14 +878,6 @@ export default function App() {
               onAddSupplier={addSupplier}
               onDeleteSupplier={deleteSupplier}
             />
-          )}
-
-          {activeTab === 'dashboard' && (
-            <div className="py-4">
-              <ErrorBoundary>
-                <Dashboard data={data} />
-              </ErrorBoundary>
-            </div>
           )}
 
           {activeTab === 'orders' && (

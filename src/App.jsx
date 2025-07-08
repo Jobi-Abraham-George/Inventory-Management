@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import SupplierCard from "./components/SupplierCard";
 import SupplierManagement from "./components/SupplierManagement";
-import Dashboard from "./components/Dashboard";
 import SearchAndFilters from "./components/SearchAndFilters";
 import initialData from "./data/initialData.json";
 
@@ -712,19 +711,108 @@ export default function App() {
 
         {/* Content Area - Mobile Responsive */}
         <div className="px-4 lg:px-6 pb-6">
-          {/* Render content based on active tab */}
-          {(() => {
-            switch (activeTab) {
-              case 'dashboard':
-                return (
-                  <div className="py-4">
-                    <ErrorBoundary>
-                      <Dashboard data={data} />
-                    </ErrorBoundary>
+          {/* Dashboard Tab */}
+          {activeTab === 'dashboard' && (
+            <div className="py-6">
+              {/* Welcome Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mb-6">
+                <h2 className="text-3xl font-bold mb-2">🍽️ Welcome to Invotraq</h2>
+                <p className="text-blue-100">Your complete restaurant inventory management solution</p>
+              </div>
+
+              {/* Quick Stats Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-3xl font-bold text-blue-400">{data?.suppliers ? Object.keys(data.suppliers).length : 0}</div>
+                      <div className="text-slate-400">Suppliers</div>
+                    </div>
+                    <div className="text-3xl">🏭</div>
                   </div>
-                );
-              case 'inventory':
-                return (
+                </div>
+
+                <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-3xl font-bold text-slate-100">{data?.inventory ? data.inventory.length : 0}</div>
+                      <div className="text-slate-400">Items</div>
+                    </div>
+                    <div className="text-3xl">📦</div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-3xl font-bold text-orange-400">
+                        {data?.inventory ? data.inventory.filter(item => (item.onHandQty || 0) <= 5 && (item.onHandQty || 0) > 0).length : 0}
+                      </div>
+                      <div className="text-slate-400">Low Stock</div>
+                    </div>
+                    <div className="text-3xl">⚠️</div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-3xl font-bold text-red-400">
+                        {data?.inventory ? data.inventory.filter(item => (item.onHandQty || 0) === 0).length : 0}
+                      </div>
+                      <div className="text-slate-400">Out of Stock</div>
+                    </div>
+                    <div className="text-3xl">🚨</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <button 
+                  onClick={() => setActiveTab('inventory')}
+                  className="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-left"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">📦</span>
+                    <div>
+                      <div className="font-semibold">Manage Inventory</div>
+                      <div className="text-blue-200 text-sm">View and update stock levels</div>
+                    </div>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => setActiveTab('suppliers')}
+                  className="p-4 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-left"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">🏭</span>
+                    <div>
+                      <div className="font-semibold">Manage Suppliers</div>
+                      <div className="text-green-200 text-sm">Add and edit supplier information</div>
+                    </div>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => setActiveTab('reports')}
+                  className="p-4 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-left"
+                >
+                  <div className="flex items-center">
+                    <span className="text-2xl mr-3">📊</span>
+                    <div>
+                      <div className="font-semibold">View Reports</div>
+                      <div className="text-purple-200 text-sm">Analyze inventory trends</div>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Inventory Tab - Keep existing functionality */}
+          {activeTab === 'inventory' && (
             <>
               {/* Search and Filters - Mobile Responsive */}
               <div className="py-4">
@@ -873,45 +961,152 @@ export default function App() {
                 </div>
               )}
             </>
-                );
-              case 'suppliers':
-                return (
-                  <SupplierManagement
-                    suppliers={data.suppliers || {}}
-                    inventory={data.inventory || []}
-                    onUpdateSupplier={updateSupplier}
-                    onAddSupplier={addSupplier}
-                    onDeleteSupplier={deleteSupplier}
-                  />
-                );
-              case 'orders':
-                return (
-                  <div className="py-8 text-center">
-                    <div className="text-6xl mb-4">📋</div>
-                    <h3 className="text-xl font-semibold text-slate-300 mb-2">Orders Coming Soon</h3>
-                    <p className="text-slate-400">Purchase order management and supplier communications will be available here.</p>
+          )}
+
+          {/* Suppliers Tab */}
+          {activeTab === 'suppliers' && (
+            <div className="py-6">
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🏭</div>
+                <h3 className="text-2xl font-semibold text-slate-100 mb-4">Supplier Management</h3>
+                <p className="text-slate-400 mb-6">Manage your restaurant suppliers and vendor relationships</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">📋</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Supplier Directory</h4>
+                    <p className="text-slate-400 text-sm">View and manage all your suppliers</p>
                   </div>
-                );
-              case 'reports':
-                return (
-                  <div className="py-8 text-center">
-                    <div className="text-6xl mb-4">📈</div>
-                    <h3 className="text-xl font-semibold text-slate-300 mb-2">Reports Coming Soon</h3>
-                    <p className="text-slate-400">Detailed reports and analytics will be available here.</p>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">📞</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Contact Management</h4>
+                    <p className="text-slate-400 text-sm">Store supplier contact information</p>
                   </div>
-                );
-              case 'settings':
-                return (
-                  <div className="py-8 text-center">
-                    <div className="text-6xl mb-4">⚙️</div>
-                    <h3 className="text-xl font-semibold text-slate-300 mb-2">Settings Coming Soon</h3>
-                    <p className="text-slate-400">System configuration and preferences will be available here.</p>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">📊</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Performance Tracking</h4>
+                    <p className="text-slate-400 text-sm">Monitor supplier reliability and costs</p>
                   </div>
-                );
-              default:
-                return null;
-            }
-          })()}
+                </div>
+
+                <button className="mt-6 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+                  Add New Supplier
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Orders Tab */}
+          {activeTab === 'orders' && (
+            <div className="py-6">
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">📋</div>
+                <h3 className="text-2xl font-semibold text-slate-100 mb-4">Order Management</h3>
+                <p className="text-slate-400 mb-6">Create, track, and manage purchase orders</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">📝</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Create Orders</h4>
+                    <p className="text-slate-400 text-sm">Generate purchase orders automatically</p>
+                  </div>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">🚚</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Track Deliveries</h4>
+                    <p className="text-slate-400 text-sm">Monitor order status and delivery</p>
+                  </div>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">💰</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Cost Analysis</h4>
+                    <p className="text-slate-400 text-sm">Track spending and optimize costs</p>
+                  </div>
+                </div>
+
+                <button className="mt-6 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors">
+                  Create New Order
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Reports Tab */}
+          {activeTab === 'reports' && (
+            <div className="py-6">
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">�</div>
+                <h3 className="text-2xl font-semibold text-slate-100 mb-4">Reports & Analytics</h3>
+                <p className="text-slate-400 mb-6">Analyze your inventory data and trends</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">📈</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Inventory Trends</h4>
+                    <p className="text-slate-400 text-sm">Track inventory levels over time</p>
+                  </div>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">💸</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Cost Reports</h4>
+                    <p className="text-slate-400 text-sm">Analyze spending patterns</p>
+                  </div>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">⚡</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Performance Metrics</h4>
+                    <p className="text-slate-400 text-sm">Monitor key performance indicators</p>
+                  </div>
+                </div>
+
+                <button className="mt-6 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+                  Generate Report
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Settings Tab */}
+          {activeTab === 'settings' && (
+            <div className="py-6">
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">⚙️</div>
+                <h3 className="text-2xl font-semibold text-slate-100 mb-4">System Settings</h3>
+                <p className="text-slate-400 mb-6">Configure your inventory system preferences</p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">👤</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">User Management</h4>
+                    <p className="text-slate-400 text-sm">Manage user accounts and permissions</p>
+                  </div>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">🔔</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Notifications</h4>
+                    <p className="text-slate-400 text-sm">Configure alerts and notifications</p>
+                  </div>
+                  
+                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                    <div className="text-3xl mb-3">💾</div>
+                    <h4 className="font-semibold text-slate-100 mb-2">Data Management</h4>
+                    <p className="text-slate-400 text-sm">Backup and export your data</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 space-x-4">
+                  <button className="px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors">
+                    Export Data
+                  </button>
+                  <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                    System Preferences
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Error Toast */}

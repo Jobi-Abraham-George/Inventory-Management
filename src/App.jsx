@@ -51,6 +51,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
+
+  
   // Search and Filter States
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSuppliers, setSelectedSuppliers] = useState([]);
@@ -711,15 +713,18 @@ export default function App() {
         {/* Content Area - Mobile Responsive */}
         <div className="px-4 lg:px-6 pb-6">
           {/* Render content based on active tab */}
-          {activeTab === 'dashboard' && (
-            <div className="py-4">
-              <ErrorBoundary>
-                <Dashboard data={data} />
-              </ErrorBoundary>
-            </div>
-          )}
-
-          {activeTab === 'inventory' && (
+          {(() => {
+            switch (activeTab) {
+              case 'dashboard':
+                return (
+                  <div className="py-4">
+                    <ErrorBoundary>
+                      <Dashboard data={data} />
+                    </ErrorBoundary>
+                  </div>
+                );
+              case 'inventory':
+                return (
             <>
               {/* Search and Filters - Mobile Responsive */}
               <div className="py-4">
@@ -868,41 +873,45 @@ export default function App() {
                 </div>
               )}
             </>
-          )}
-
-          {activeTab === 'suppliers' && (
-            <SupplierManagement
-              suppliers={data.suppliers || {}}
-              inventory={data.inventory || []}
-              onUpdateSupplier={updateSupplier}
-              onAddSupplier={addSupplier}
-              onDeleteSupplier={deleteSupplier}
-            />
-          )}
-
-          {activeTab === 'orders' && (
-            <div className="py-8 text-center">
-              <div className="text-6xl mb-4">📋</div>
-              <h3 className="text-xl font-semibold text-slate-300 mb-2">Orders Coming Soon</h3>
-              <p className="text-slate-400">Purchase order management and supplier communications will be available here.</p>
-            </div>
-          )}
-
-          {activeTab === 'reports' && (
-            <div className="py-8 text-center">
-              <div className="text-6xl mb-4">📈</div>
-              <h3 className="text-xl font-semibold text-slate-300 mb-2">Reports Coming Soon</h3>
-              <p className="text-slate-400">Detailed reports and analytics will be available here.</p>
-            </div>
-          )}
-
-          {activeTab === 'settings' && (
-            <div className="py-8 text-center">
-              <div className="text-6xl mb-4">⚙️</div>
-              <h3 className="text-xl font-semibold text-slate-300 mb-2">Settings Coming Soon</h3>
-              <p className="text-slate-400">System configuration and preferences will be available here.</p>
-            </div>
-          )}
+                );
+              case 'suppliers':
+                return (
+                  <SupplierManagement
+                    suppliers={data.suppliers || {}}
+                    inventory={data.inventory || []}
+                    onUpdateSupplier={updateSupplier}
+                    onAddSupplier={addSupplier}
+                    onDeleteSupplier={deleteSupplier}
+                  />
+                );
+              case 'orders':
+                return (
+                  <div className="py-8 text-center">
+                    <div className="text-6xl mb-4">📋</div>
+                    <h3 className="text-xl font-semibold text-slate-300 mb-2">Orders Coming Soon</h3>
+                    <p className="text-slate-400">Purchase order management and supplier communications will be available here.</p>
+                  </div>
+                );
+              case 'reports':
+                return (
+                  <div className="py-8 text-center">
+                    <div className="text-6xl mb-4">📈</div>
+                    <h3 className="text-xl font-semibold text-slate-300 mb-2">Reports Coming Soon</h3>
+                    <p className="text-slate-400">Detailed reports and analytics will be available here.</p>
+                  </div>
+                );
+              case 'settings':
+                return (
+                  <div className="py-8 text-center">
+                    <div className="text-6xl mb-4">⚙️</div>
+                    <h3 className="text-xl font-semibold text-slate-300 mb-2">Settings Coming Soon</h3>
+                    <p className="text-slate-400">System configuration and preferences will be available here.</p>
+                  </div>
+                );
+              default:
+                return null;
+            }
+          })()}
         </div>
 
         {/* Error Toast */}

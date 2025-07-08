@@ -513,22 +513,21 @@ export default function App() {
   const getFilteredStats = () => {
     try {
       if (!data || !data.inventory || !data.suppliers) {
-        return { suppliers: 0, items: 0, onHand: 0, toBuild: 0, toOrder: 0, lowStock: 0, outOfStock: 0 };
+        return { suppliers: 0, items: 0, onHand: 0, toOrder: 0, lowStock: 0, outOfStock: 0 };
       }
 
       const filteredItems = Object.values(filteredInventory).flat();
       const suppliers = Object.keys(filteredInventory).length;
       const items = filteredItems.length;
       const onHand = filteredItems.reduce((total, item) => total + (item?.onHandQty || 0), 0);
-      const toBuild = filteredItems.reduce((total, item) => total + (item?.buildQty || 0), 0);
       const toOrder = filteredItems.reduce((total, item) => total + (item?.quantity || 0), 0);
       const lowStock = filteredItems.filter(item => item && (item.onHandQty || 0) <= 5 && (item.onHandQty || 0) > 0).length;
       const outOfStock = filteredItems.filter(item => item && (item.onHandQty || 0) === 0).length;
 
-      return { suppliers, items, onHand, toBuild, toOrder, lowStock, outOfStock };
+      return { suppliers, items, onHand, toOrder, lowStock, outOfStock };
     } catch (error) {
       console.error("Error calculating filtered stats:", error);
-      return { suppliers: 0, items: 0, onHand: 0, toBuild: 0, toOrder: 0, lowStock: 0, outOfStock: 0 };
+      return { suppliers: 0, items: 0, onHand: 0, toOrder: 0, lowStock: 0, outOfStock: 0 };
     }
   };
 
@@ -852,7 +851,7 @@ export default function App() {
               )}
 
               {/* Statistics Dashboard - Mobile Responsive */}
-              <div className="grid grid-cols-2 lg:grid-cols-7 gap-3 lg:gap-4 mb-6">
+              <div className="grid grid-cols-2 lg:grid-cols-6 gap-3 lg:gap-4 mb-6">
                 <div className="bg-slate-800 p-3 lg:p-4 rounded-lg border border-slate-700">
                   <div className="text-2xl lg:text-3xl font-bold text-blue-400">{stats.suppliers}</div>
                   <div className="text-xs lg:text-sm text-slate-400">Suppliers</div>
@@ -864,10 +863,6 @@ export default function App() {
                 <div className="bg-slate-800 p-3 lg:p-4 rounded-lg border border-slate-700">
                   <div className="text-2xl lg:text-3xl font-bold text-green-400">{stats.onHand}</div>
                   <div className="text-xs lg:text-sm text-slate-400">On Hand</div>
-                </div>
-                <div className="bg-slate-800 p-3 lg:p-4 rounded-lg border border-slate-700">
-                  <div className="text-2xl lg:text-3xl font-bold text-purple-400">{stats.toBuild}</div>
-                  <div className="text-xs lg:text-sm text-slate-400">To Build</div>
                 </div>
                 <div className="bg-slate-800 p-3 lg:p-4 rounded-lg border border-slate-700">
                   <div className="text-2xl lg:text-3xl font-bold text-blue-400">{stats.toOrder}</div>

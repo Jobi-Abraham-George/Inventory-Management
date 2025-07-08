@@ -1,15 +1,54 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import SupplierCard from "./components/SupplierCard";
 import SupplierManagement from "./components/SupplierManagement";
 import Dashboard from "./components/Dashboard";
 import SearchAndFilters from "./components/SearchAndFilters";
 import initialData from "./data/initialData.json";
 
+// Simple Error Boundary Component
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('Dashboard Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="py-8 text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h3 className="text-xl font-semibold text-red-400 mb-2">Dashboard Error</h3>
+          <p className="text-slate-400">Something went wrong loading the dashboard.</p>
+          <pre className="text-xs text-slate-500 mt-4 bg-slate-800 p-4 rounded max-w-md mx-auto overflow-auto">
+            {this.state.error?.toString()}
+          </pre>
+          <button 
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Try Again
+          </button>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 export default function App() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('inventory');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Search and Filter States
@@ -671,6 +710,8 @@ export default function App() {
 
         {/* Content Area - Mobile Responsive */}
         <div className="px-4 lg:px-6 pb-6">
+
+          
           {/* Render content based on active tab */}
           {activeTab === 'inventory' && (
             <>
@@ -834,7 +875,11 @@ export default function App() {
           )}
 
           {activeTab === 'dashboard' && (
-            <Dashboard data={data} />
+            <div className="py-4">
+              <ErrorBoundary>
+                <Dashboard data={data} />
+              </ErrorBoundary>
+            </div>
           )}
 
           {activeTab === 'orders' && (

@@ -106,59 +106,6 @@ export default function SearchAndFilters({
 
   return (
     <div className="mb-4 space-y-4">
-      {/* Field Reference Guide - Mobile Optimized */}
-      <div className="bg-slate-800 rounded-lg border border-slate-700 shadow-sm p-3 lg:p-4">
-        <div className="mb-3">
-          <div className="flex items-center mb-3">
-            <span className="text-blue-400 mr-2">📋</span>
-            <span className="text-sm lg:text-base font-semibold text-slate-100">Field Reference Guide</span>
-          </div>
-          
-          {/* Horizontal Field Layout - Mobile Responsive */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-3 mb-3">
-            <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-blue-900/30 rounded-md">
-              <span className="text-sm flex-shrink-0">📊</span>
-              <div className="min-w-0">
-                <div className="font-semibold text-slate-100 text-xs">On Hand</div>
-                <div className="text-xs text-slate-400 truncate">Current stock</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-purple-900/30 rounded-md">
-              <span className="text-sm flex-shrink-0">�</span>
-              <div className="min-w-0">
-                <div className="font-semibold text-slate-100 text-xs">Order</div>
-                <div className="text-xs text-slate-400 truncate">Need to buy</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-indigo-900/30 rounded-md">
-              <span className="text-sm flex-shrink-0">�</span>
-              <div className="min-w-0">
-                <div className="font-semibold text-slate-100 text-xs">Case</div>
-                <div className="text-xs text-slate-400 truncate">Pack size</div>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-1 lg:space-x-2 p-2 bg-slate-700/50 rounded-md">
-              <span className="text-sm flex-shrink-0">📏</span>
-              <div className="min-w-0">
-                <div className="font-semibold text-slate-100 text-xs">UOM</div>
-                <div className="text-xs text-slate-400 truncate">Unit type</div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Pro Tip - Mobile Optimized */}
-          <div className="flex items-start space-x-2 p-2 lg:p-3 bg-yellow-900/30 rounded-md border border-yellow-600/30">
-            <span className="text-yellow-400 text-sm flex-shrink-0">💡</span>
-            <div className="text-xs lg:text-sm text-yellow-200">
-              <strong>Pro Tip:</strong> Use search and filters to quickly find items during busy operations.
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Search Bar - Mobile Optimized */}
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

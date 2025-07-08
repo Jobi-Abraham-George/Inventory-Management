@@ -1,41 +1,148 @@
-import { useState } from "react";
+import { useState, useMemo } from 'react';
 
 export default function SupplierManagement({ suppliers, inventory, onUpdateSupplier, onAddSupplier, onDeleteSupplier }) {
+  const [activeView, setActiveView] = useState('list'); // list, add, edit
   const [selectedSupplier, setSelectedSupplier] = useState(null);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [editingSupplier, setEditingSupplier] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
-  const [newSupplier, setNewSupplier] = useState({
-    name: "",
+  // Supplier form state
+  const [supplierForm, setSupplierForm] = useState({
+    name: '',
     contactInfo: {
-      phone: "",
-      email: "",
-      address: "",
-      contactPerson: "",
-      website: ""
+      phone: '',
+      email: '',
+      address: '',
+      contactPerson: '',
+      website: ''
     },
     businessInfo: {
       leadTimeDays: 2,
       minimumOrder: 100,
-      paymentTerms: "Net 30",
+      paymentTerms: 'Net 30',
       deliveryDays: [],
-      notes: ""
+      notes: ''
     },
-    status: "active"
+    status: 'active'
   });
 
-  // Get supplier statistics
-  const getSupplierStats = (supplierId) => {
+  // Calculate supplier performance metrics
+  const getSupplierMetrics = (supplierId) => {
     const supplierItems = inventory.filter(item => item.supplierId === supplierId);
     const totalItems = supplierItems.length;
-    const totalValue = supplierItems.reduce((sum, item) => {
-      return sum + ((item.onHandQty || 0) * (item.pricing?.unitCost || 0));
-    }, 0);
-    const lowStockItems = supplierItems.filter(item => (item.onHandQty || 0) <= 5).length;
+    const totalValue = supplierItems.reduce((sum, item) => 
+      sum + ((item.onHandQty || 0) * (item.pricing?.unitCost || 0)), 0
+    );
+    const lowStockItems = supplierItems.filter(item => (item.onHandQty || 0) <= 5 && (item.onHandQty || 0) > 0).length;
     const outOfStockItems = supplierItems.filter(item => (item.onHandQty || 0) === 0).length;
     
-    return { totalItems, totalValue, lowStockItems, outOfStockItems };
+    return {
+      totalItems,
+      totalValue,
+      lowStockItems,
+      outOfStockItems,
+      stockHealth: totalItems > 0 ? ((totalItems - outOfStockItems - lowStockItems) / totalItems * 100) : 100
+    };
+  };
+
+  // Filter suppliers
+  const filteredSuppliers = useMemo(() => {
+    const supplierArray = Object.values(suppliers || {});
+    return supplierArray.filter(supplier => {
+      const matchesSearch = supplier.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          supplier.contactInfo?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          supplier.contactInfo?.contactPerson?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesStatus = statusFilter === 'all' || supplier.status === statusFilter;
+      return matchesSearch && matchesStatus;
+    });
+  }, [suppliers, searchQuery, statusFilter]);
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (activeView === 'add') {
+      const newId = supplierForm.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+      const newSupplier = {
+        ...supplierForm,
+        id: newId,
+        createdAt: new Date().toLocaleDateString(),
+        updatedAt: new Date().toLocaleDateString()
+      };
+      onAddSupplier(newId, newSupplier);
+    } else if (activeView === 'edit' && selectedSupplier) {
+      const updatedSupplier = {
+        ...supplierForm,
+        id: selectedSupplier.id,
+        createdAt: selectedSupplier.createdAt,
+        updatedAt: new Date().toLocaleDateString()
+      };
+      onUpdateSupplier(selectedSupplier.id, updatedSupplier);
+    }
+    
+    // Reset form and return to list
+    resetForm();
+    setActiveView('list');
+  };
+
+  // Reset form
+  const resetForm = () => {
+    setSupplierForm({
+      name: '',
+      contactInfo: {
+        phone: '',
+        email: '',
+        address: '',
+        contactPerson: '',
+        website: ''
+      },
+      businessInfo: {
+        leadTimeDays: 2,
+        minimumOrder: 100,
+        paymentTerms: 'Net 30',
+        deliveryDays: [],
+        notes: ''
+      },
+      status: 'active'
+    });
+    setSelectedSupplier(null);
+  };
+
+  // Start editing a supplier
+  const startEdit = (supplier) => {
+    setSelectedSupplier(supplier);
+    setSupplierForm({ ...supplier });
+    setActiveView('edit');
+  };
+
+  // Handle delete with confirmation
+  const handleDelete = (supplier) => {
+    if (window.confirm(`Are you sure you want to delete ${supplier.name}? This will also remove all associated inventory items.`)) {
+      onDeleteSupplier(supplier.id);
+    }
+  };
+
+  // Handle delivery days
+  const toggleDeliveryDay = (day) => {
+    const currentDays = supplierForm.businessInfo.deliveryDays || [];
+    const updatedDays = currentDays.includes(day)
+      ? currentDays.filter(d => d !== day)
+      : [...currentDays, day];
+    
+    setSupplierForm(prev => ({
+      ...prev,
+      businessInfo: {
+        ...prev.businessInfo,
+        deliveryDays: updatedDays
+      }
+    }));
+  };
+
+  const formatCurrency = (value) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(value);
   };
 
   const getSupplierIcon = (supplierName) => {
@@ -50,473 +157,466 @@ export default function SupplierManagement({ suppliers, inventory, onUpdateSuppl
     return icons[supplierName] || '🏢';
   };
 
-  const handleAddSupplier = () => {
-    if (!newSupplier.name.trim()) return;
-    
-    const supplierId = newSupplier.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-    const supplierWithId = {
-      ...newSupplier,
-      id: supplierId,
-      createdAt: new Date().toLocaleDateString(),
-      updatedAt: new Date().toLocaleDateString()
-    };
-    
-    onAddSupplier(supplierId, supplierWithId);
-    setNewSupplier({
-      name: "",
-      contactInfo: { phone: "", email: "", address: "", contactPerson: "", website: "" },
-      businessInfo: { leadTimeDays: 2, minimumOrder: 100, paymentTerms: "Net 30", deliveryDays: [], notes: "" },
-      status: "active"
-    });
-    setShowAddForm(false);
-  };
-
-  const handleEditSupplier = (supplier) => {
-    setEditingSupplier({ ...supplier });
-    setShowEditForm(true);
-  };
-
-  const handleUpdateSupplier = () => {
-    if (!editingSupplier || !editingSupplier.name.trim()) return;
-    
-    const updatedSupplier = {
-      ...editingSupplier,
-      updatedAt: new Date().toLocaleDateString()
-    };
-    
-    onUpdateSupplier(editingSupplier.id, updatedSupplier);
-    setEditingSupplier(null);
-    setShowEditForm(false);
-  };
-
-  const handleDeleteSupplier = (supplierId) => {
-    if (window.confirm('Are you sure you want to delete this supplier? This action cannot be undone.')) {
-      onDeleteSupplier(supplierId);
-      if (selectedSupplier?.id === supplierId) {
-        setSelectedSupplier(null);
-      }
-    }
-  };
-
-  const handleDeliveryDayToggle = (day, isEditing = false) => {
-    const target = isEditing ? editingSupplier : newSupplier;
-    const setter = isEditing ? setEditingSupplier : setNewSupplier;
-    
-    const currentDays = target.businessInfo.deliveryDays || [];
-    const updatedDays = currentDays.includes(day)
-      ? currentDays.filter(d => d !== day)
-      : [...currentDays, day];
-    
-    setter({
-      ...target,
-      businessInfo: {
-        ...target.businessInfo,
-        deliveryDays: updatedDays
-      }
-    });
-  };
-
-  const renderSupplierForm = (supplier, isEditing = false) => {
-    const formData = isEditing ? editingSupplier : newSupplier;
-    const setFormData = isEditing ? setEditingSupplier : setNewSupplier;
-
+  // Render supplier list view
+  if (activeView === 'list') {
     return (
-      <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-slate-100 border-b border-slate-600 pb-2">
-              📋 Basic Information
-            </h3>
-            
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Supplier Name *</label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter supplier name"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Status</label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({...formData, status: e.target.value})}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-                <option value="pending">Pending</option>
-              </select>
-            </div>
+      <div className="py-6">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-100 mb-2">Supplier Management</h2>
+            <p className="text-slate-400">Manage your restaurant suppliers and vendor relationships</p>
           </div>
-
-          {/* Contact Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-slate-100 border-b border-slate-600 pb-2">
-              📞 Contact Information
-            </h3>
-            
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Contact Person</label>
-              <input
-                type="text"
-                value={formData.contactInfo.contactPerson}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  contactInfo: {...formData.contactInfo, contactPerson: e.target.value}
-                })}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Contact person name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Phone</label>
-              <input
-                type="tel"
-                value={formData.contactInfo.phone}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  contactInfo: {...formData.contactInfo, phone: e.target.value}
-                })}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="(555) 123-4567"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Email</label>
-              <input
-                type="email"
-                value={formData.contactInfo.email}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  contactInfo: {...formData.contactInfo, email: e.target.value}
-                })}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="orders@supplier.com"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Website</label>
-              <input
-                type="url"
-                value={formData.contactInfo.website}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  contactInfo: {...formData.contactInfo, website: e.target.value}
-                })}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="www.supplier.com"
-              />
-            </div>
-          </div>
-
-          {/* Business Information */}
-          <div className="space-y-4 lg:col-span-2">
-            <h3 className="text-lg font-semibold text-slate-100 border-b border-slate-600 pb-2">
-              💼 Business Information
-            </h3>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Lead Time (Days)</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.businessInfo.leadTimeDays}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    businessInfo: {...formData.businessInfo, leadTimeDays: parseInt(e.target.value) || 0}
-                  })}
-                  className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-2">Minimum Order ($)</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.businessInfo.minimumOrder}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    businessInfo: {...formData.businessInfo, minimumOrder: parseFloat(e.target.value) || 0}
-                  })}
-                  className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-300 mb-2">Payment Terms</label>
-                <select
-                  value={formData.businessInfo.paymentTerms}
-                  onChange={(e) => setFormData({
-                    ...formData,
-                    businessInfo: {...formData.businessInfo, paymentTerms: e.target.value}
-                  })}
-                  className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="Net 15">Net 15</option>
-                  <option value="Net 30">Net 30</option>
-                  <option value="Net 45">Net 45</option>
-                  <option value="Net 60">Net 60</option>
-                  <option value="COD">Cash on Delivery</option>
-                  <option value="Prepaid">Prepaid</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Delivery Days</label>
-              <div className="flex flex-wrap gap-2">
-                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
-                  <button
-                    key={day}
-                    type="button"
-                    onClick={() => handleDeliveryDayToggle(day, isEditing)}
-                    className={`px-3 py-1 text-sm rounded-lg border transition-colors ${
-                      (formData.businessInfo.deliveryDays || []).includes(day)
-                        ? 'bg-blue-600 border-blue-500 text-white'
-                        : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'
-                    }`}
-                  >
-                    {day.slice(0, 3)}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Address</label>
-              <textarea
-                value={formData.contactInfo.address}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  contactInfo: {...formData.contactInfo, address: e.target.value}
-                })}
-                rows={2}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Full business address"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-300 mb-2">Notes</label>
-              <textarea
-                value={formData.businessInfo.notes}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  businessInfo: {...formData.businessInfo, notes: e.target.value}
-                })}
-                rows={3}
-                className="w-full px-3 py-2 border border-slate-600 bg-slate-700 text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Additional notes about this supplier..."
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Form Actions */}
-        <div className="flex justify-end gap-3 mt-6 pt-6 border-t border-slate-600">
           <button
-            onClick={() => {
-              if (isEditing) {
-                setShowEditForm(false);
-                setEditingSupplier(null);
-              } else {
-                setShowAddForm(false);
-              }
-            }}
-            className="px-4 py-2 text-slate-300 border border-slate-600 rounded-lg hover:bg-slate-700 transition-colors"
+            onClick={() => setActiveView('add')}
+            className="mt-4 sm:mt-0 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center"
           >
-            Cancel
-          </button>
-          <button
-            onClick={isEditing ? handleUpdateSupplier : handleAddSupplier}
-            disabled={!formData.name.trim()}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {isEditing ? 'Update Supplier' : 'Add Supplier'}
+            <span className="mr-2">➕</span>
+            Add New Supplier
           </button>
         </div>
-      </div>
-    );
-  };
 
-  const supplierList = Object.values(suppliers);
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-semibold text-slate-100">Supplier Management</h2>
-          <p className="text-slate-400">Manage your suppliers, contacts, and business terms</p>
+        {/* Search and Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="md:col-span-2">
+            <input
+              type="text"
+              placeholder="Search suppliers by name, email, or contact person..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
         </div>
-        <button
-          onClick={() => setShowAddForm(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-        >
-          <span>➕</span>
-          Add New Supplier
-        </button>
-      </div>
 
-      {/* Add Form */}
-      {showAddForm && (
-        <div>
-          <h3 className="text-xl font-semibold text-slate-100 mb-4">Add New Supplier</h3>
-          {renderSupplierForm(null, false)}
-        </div>
-      )}
-
-      {/* Edit Form */}
-      {showEditForm && editingSupplier && (
-        <div>
-          <h3 className="text-xl font-semibold text-slate-100 mb-4">Edit Supplier</h3>
-          {renderSupplierForm(editingSupplier, true)}
-        </div>
-      )}
-
-      {/* Suppliers Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {supplierList.map(supplier => {
-          const stats = getSupplierStats(supplier.id);
-          return (
-            <div key={supplier.id} className="bg-slate-800 rounded-lg border border-slate-700 overflow-hidden">
-              {/* Supplier Header */}
-              <div className="bg-slate-700 p-4 border-b border-slate-600">
-                <div className="flex items-center justify-between">
+        {/* Suppliers Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+          {filteredSuppliers.map((supplier) => {
+            const metrics = getSupplierMetrics(supplier.id);
+            return (
+              <div key={supplier.id} className="bg-slate-800 rounded-lg border border-slate-700 p-6 hover:border-slate-600 transition-colors">
+                {/* Supplier Header */}
+                <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
-                      <span className="text-white text-xl">{getSupplierIcon(supplier.name)}</span>
-                    </div>
+                    <div className="text-3xl mr-3">{getSupplierIcon(supplier.name)}</div>
                     <div>
                       <h3 className="text-lg font-semibold text-slate-100">{supplier.name}</h3>
-                      <div className="flex items-center gap-2">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          supplier.status === 'active' ? 'bg-green-600 text-green-100' :
-                          supplier.status === 'inactive' ? 'bg-red-600 text-red-100' :
-                          'bg-yellow-600 text-yellow-100'
+                      <div className="flex items-center mt-1">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          supplier.status === 'active' 
+                            ? 'bg-green-900/50 text-green-300 border border-green-600' 
+                            : 'bg-red-900/50 text-red-300 border border-red-600'
                         }`}>
                           {supplier.status}
-                        </span>
-                        <span className="text-xs text-slate-400">
-                          {stats.totalItems} items
                         </span>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="flex gap-1">
+                  {/* Action Buttons */}
+                  <div className="flex space-x-2">
                     <button
-                      onClick={() => handleEditSupplier(supplier)}
-                      className="p-2 text-slate-400 hover:text-blue-400 hover:bg-slate-600 rounded-lg transition-colors"
-                      title="Edit supplier"
+                      onClick={() => startEdit(supplier)}
+                      className="p-2 text-blue-400 hover:bg-blue-900/30 rounded-lg transition-colors"
+                      title="Edit Supplier"
                     >
                       ✏️
                     </button>
                     <button
-                      onClick={() => handleDeleteSupplier(supplier.id)}
-                      className="p-2 text-slate-400 hover:text-red-400 hover:bg-slate-600 rounded-lg transition-colors"
-                      title="Delete supplier"
+                      onClick={() => handleDelete(supplier)}
+                      className="p-2 text-red-400 hover:bg-red-900/30 rounded-lg transition-colors"
+                      title="Delete Supplier"
                     >
                       🗑️
                     </button>
                   </div>
                 </div>
-              </div>
 
-              {/* Supplier Details */}
-              <div className="p-4 space-y-4">
                 {/* Contact Info */}
-                <div>
-                  <h4 className="text-sm font-medium text-slate-300 mb-2">📞 Contact</h4>
-                  <div className="space-y-1 text-sm text-slate-400">
-                    {supplier.contactInfo.contactPerson && (
-                      <div>👤 {supplier.contactInfo.contactPerson}</div>
-                    )}
-                    {supplier.contactInfo.phone && (
-                      <div>📱 {supplier.contactInfo.phone}</div>
-                    )}
-                    {supplier.contactInfo.email && (
-                      <div>📧 {supplier.contactInfo.email}</div>
-                    )}
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center text-sm text-slate-300">
+                    <span className="mr-2">👤</span>
+                    {supplier.contactInfo?.contactPerson || 'No contact person'}
+                  </div>
+                  <div className="flex items-center text-sm text-slate-300">
+                    <span className="mr-2">📞</span>
+                    {supplier.contactInfo?.phone || 'No phone'}
+                  </div>
+                  <div className="flex items-center text-sm text-slate-300">
+                    <span className="mr-2">📧</span>
+                    {supplier.contactInfo?.email || 'No email'}
                   </div>
                 </div>
 
                 {/* Business Info */}
-                <div>
-                  <h4 className="text-sm font-medium text-slate-300 mb-2">💼 Business Terms</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm text-slate-400">
-                    <div>📅 {supplier.businessInfo.leadTimeDays}d lead time</div>
-                    <div>💰 ${supplier.businessInfo.minimumOrder} min</div>
-                    <div className="col-span-2">💳 {supplier.businessInfo.paymentTerms}</div>
+                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                  <div>
+                    <div className="text-slate-400">Lead Time</div>
+                    <div className="text-slate-100 font-medium">{supplier.businessInfo?.leadTimeDays || 0} days</div>
+                  </div>
+                  <div>
+                    <div className="text-slate-400">Min Order</div>
+                    <div className="text-slate-100 font-medium">${supplier.businessInfo?.minimumOrder || 0}</div>
                   </div>
                 </div>
 
-                {/* Delivery Days */}
-                {supplier.businessInfo.deliveryDays && supplier.businessInfo.deliveryDays.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-medium text-slate-300 mb-2">🚚 Delivery Days</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {supplier.businessInfo.deliveryDays.map(day => (
-                        <span key={day} className="px-2 py-1 bg-blue-600 text-blue-100 text-xs rounded">
-                          {day.slice(0, 3)}
-                        </span>
-                      ))}
+                {/* Performance Metrics */}
+                <div className="border-t border-slate-700 pt-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <div className="text-slate-400">Total Items</div>
+                      <div className="text-slate-100 font-bold">{metrics.totalItems}</div>
+                    </div>
+                    <div>
+                      <div className="text-slate-400">Total Value</div>
+                      <div className="text-green-400 font-bold">{formatCurrency(metrics.totalValue)}</div>
                     </div>
                   </div>
-                )}
+                  
+                  {metrics.totalItems > 0 && (
+                    <div className="mt-3">
+                      <div className="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Stock Health</span>
+                        <span>{Math.round(metrics.stockHealth)}%</span>
+                      </div>
+                      <div className="w-full bg-slate-700 rounded-full h-2">
+                        <div 
+                          className={`h-2 rounded-full ${
+                            metrics.stockHealth >= 80 ? 'bg-green-500' :
+                            metrics.stockHealth >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}
+                          style={{ width: `${metrics.stockHealth}%` }}
+                        ></div>
+                      </div>
+                      
+                      {(metrics.lowStockItems > 0 || metrics.outOfStockItems > 0) && (
+                        <div className="flex space-x-3 mt-2 text-xs">
+                          {metrics.lowStockItems > 0 && (
+                            <span className="text-orange-400">🟠 {metrics.lowStockItems} low</span>
+                          )}
+                          {metrics.outOfStockItems > 0 && (
+                            <span className="text-red-400">🔴 {metrics.outOfStockItems} out</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
-                {/* Statistics */}
+        {/* Empty State */}
+        {filteredSuppliers.length === 0 && (
+          <div className="text-center py-12">
+            <div className="text-6xl mb-4">🏭</div>
+            <h3 className="text-xl font-semibold text-slate-300 mb-2">
+              {searchQuery || statusFilter !== 'all' ? 'No suppliers found' : 'No suppliers yet'}
+            </h3>
+            <p className="text-slate-400 mb-6">
+              {searchQuery || statusFilter !== 'all' 
+                ? 'Try adjusting your search or filters'
+                : 'Add your first supplier to get started'
+              }
+            </p>
+            {(!searchQuery && statusFilter === 'all') && (
+              <button
+                onClick={() => setActiveView('add')}
+                className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+              >
+                Add First Supplier
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Render add/edit form
+  return (
+    <div className="py-6">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-100">
+            {activeView === 'add' ? 'Add New Supplier' : 'Edit Supplier'}
+          </h2>
+          <p className="text-slate-400">
+            {activeView === 'add' 
+              ? 'Enter supplier information to add them to your system'
+              : 'Update supplier information and business details'
+            }
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            resetForm();
+            setActiveView('list');
+          }}
+          className="px-4 py-2 text-slate-400 hover:text-slate-100 transition-colors"
+        >
+          ← Back to List
+        </button>
+      </div>
+
+      {/* Form */}
+      <form onSubmit={handleSubmit} className="max-w-4xl">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Basic Information */}
+          <div className="space-y-6">
+            <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-100 mb-4">Basic Information</h3>
+              
+              <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-medium text-slate-300 mb-2">📊 Inventory Stats</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="text-slate-400">
-                      💵 Value: <span className="text-slate-300">${stats.totalValue.toFixed(2)}</span>
-                    </div>
-                    <div className="text-slate-400">
-                      📦 Items: <span className="text-slate-300">{stats.totalItems}</span>
-                    </div>
-                    {stats.lowStockItems > 0 && (
-                      <div className="text-orange-400">
-                        ⚠️ Low: {stats.lowStockItems}
-                      </div>
-                    )}
-                    {stats.outOfStockItems > 0 && (
-                      <div className="text-red-400">
-                        ❌ Out: {stats.outOfStockItems}
-                      </div>
-                    )}
-                  </div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Supplier Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={supplierForm.name}
+                    onChange={(e) => setSupplierForm(prev => ({ ...prev, name: e.target.value }))}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="Enter supplier name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Status
+                  </label>
+                  <select
+                    value={supplierForm.status}
+                    onChange={(e) => setSupplierForm(prev => ({ ...prev, status: e.target.value }))}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                  </select>
                 </div>
               </div>
             </div>
-          );
-        })}
-      </div>
 
-      {supplierList.length === 0 && (
-        <div className="text-center py-12">
-          <div className="text-6xl mb-4">🏢</div>
-          <h3 className="text-xl font-semibold text-slate-300 mb-2">No suppliers yet</h3>
-          <p className="text-slate-400 mb-4">Add your first supplier to get started</p>
+            {/* Contact Information */}
+            <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-100 mb-4">Contact Information</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Contact Person
+                  </label>
+                  <input
+                    type="text"
+                    value={supplierForm.contactInfo.contactPerson}
+                    onChange={(e) => setSupplierForm(prev => ({
+                      ...prev,
+                      contactInfo: { ...prev.contactInfo, contactPerson: e.target.value }
+                    }))}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="Primary contact name"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    value={supplierForm.contactInfo.phone}
+                    onChange={(e) => setSupplierForm(prev => ({
+                      ...prev,
+                      contactInfo: { ...prev.contactInfo, phone: e.target.value }
+                    }))}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="(555) 123-4567"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    value={supplierForm.contactInfo.email}
+                    onChange={(e) => setSupplierForm(prev => ({
+                      ...prev,
+                      contactInfo: { ...prev.contactInfo, email: e.target.value }
+                    }))}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="supplier@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Website
+                  </label>
+                  <input
+                    type="url"
+                    value={supplierForm.contactInfo.website}
+                    onChange={(e) => setSupplierForm(prev => ({
+                      ...prev,
+                      contactInfo: { ...prev.contactInfo, website: e.target.value }
+                    }))}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="www.supplier.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Address
+                  </label>
+                  <textarea
+                    value={supplierForm.contactInfo.address}
+                    onChange={(e) => setSupplierForm(prev => ({
+                      ...prev,
+                      contactInfo: { ...prev.contactInfo, address: e.target.value }
+                    }))}
+                    rows={3}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="Enter full address"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Business Information */}
+          <div className="space-y-6">
+            <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
+              <h3 className="text-lg font-semibold text-slate-100 mb-4">Business Information</h3>
+              
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Lead Time (Days)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={supplierForm.businessInfo.leadTimeDays}
+                      onChange={(e) => setSupplierForm(prev => ({
+                        ...prev,
+                        businessInfo: { ...prev.businessInfo, leadTimeDays: parseInt(e.target.value) || 0 }
+                      }))}
+                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Minimum Order ($)
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={supplierForm.businessInfo.minimumOrder}
+                      onChange={(e) => setSupplierForm(prev => ({
+                        ...prev,
+                        businessInfo: { ...prev.businessInfo, minimumOrder: parseFloat(e.target.value) || 0 }
+                      }))}
+                      className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Payment Terms
+                  </label>
+                  <select
+                    value={supplierForm.businessInfo.paymentTerms}
+                    onChange={(e) => setSupplierForm(prev => ({
+                      ...prev,
+                      businessInfo: { ...prev.businessInfo, paymentTerms: e.target.value }
+                    }))}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="Net 15">Net 15</option>
+                    <option value="Net 30">Net 30</option>
+                    <option value="Net 45">Net 45</option>
+                    <option value="Net 60">Net 60</option>
+                    <option value="COD">Cash on Delivery</option>
+                    <option value="Prepaid">Prepaid</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Delivery Days
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(day => (
+                      <label key={day} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          checked={(supplierForm.businessInfo.deliveryDays || []).includes(day)}
+                          onChange={() => toggleDeliveryDay(day)}
+                          className="mr-2 text-blue-600 bg-slate-700 border-slate-600 rounded focus:ring-blue-500"
+                        />
+                        <span className="text-sm text-slate-300">{day}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Notes
+                  </label>
+                  <textarea
+                    value={supplierForm.businessInfo.notes}
+                    onChange={(e) => setSupplierForm(prev => ({
+                      ...prev,
+                      businessInfo: { ...prev.businessInfo, notes: e.target.value }
+                    }))}
+                    rows={4}
+                    className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                    placeholder="Additional notes about this supplier..."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Buttons */}
+        <div className="flex space-x-4 mt-8">
           <button
-            onClick={() => setShowAddForm(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            type="submit"
+            className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium"
           >
-            Add First Supplier
+            {activeView === 'add' ? 'Add Supplier' : 'Update Supplier'}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              resetForm();
+              setActiveView('list');
+            }}
+            className="px-6 py-3 bg-slate-600 hover:bg-slate-700 text-white rounded-lg transition-colors font-medium"
+          >
+            Cancel
           </button>
         </div>
-      )}
+      </form>
     </div>
   );
 }

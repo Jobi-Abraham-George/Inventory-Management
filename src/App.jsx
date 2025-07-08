@@ -965,37 +965,13 @@ export default function App() {
 
           {/* Suppliers Tab */}
           {activeTab === 'suppliers' && (
-            <div className="py-6">
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">🏭</div>
-                <h3 className="text-2xl font-semibold text-slate-100 mb-4">Supplier Management</h3>
-                <p className="text-slate-400 mb-6">Manage your restaurant suppliers and vendor relationships</p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                    <div className="text-3xl mb-3">📋</div>
-                    <h4 className="font-semibold text-slate-100 mb-2">Supplier Directory</h4>
-                    <p className="text-slate-400 text-sm">View and manage all your suppliers</p>
-                  </div>
-                  
-                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                    <div className="text-3xl mb-3">📞</div>
-                    <h4 className="font-semibold text-slate-100 mb-2">Contact Management</h4>
-                    <p className="text-slate-400 text-sm">Store supplier contact information</p>
-                  </div>
-                  
-                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                    <div className="text-3xl mb-3">📊</div>
-                    <h4 className="font-semibold text-slate-100 mb-2">Performance Tracking</h4>
-                    <p className="text-slate-400 text-sm">Monitor supplier reliability and costs</p>
-                  </div>
-                </div>
-
-                <button className="mt-6 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
-                  Add New Supplier
-                </button>
-              </div>
-            </div>
+            <SupplierManagement
+              suppliers={data.suppliers || {}}
+              inventory={data.inventory || []}
+              onUpdateSupplier={updateSupplier}
+              onAddSupplier={addSupplier}
+              onDeleteSupplier={deleteSupplier}
+            />
           )}
 
           {/* Orders Tab */}

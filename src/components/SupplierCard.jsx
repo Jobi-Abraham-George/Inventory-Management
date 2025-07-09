@@ -1,7 +1,6 @@
 import { useState } from "react";
 
-export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddItem, supplierId, onAutoOrder }) {
-  const [newItem, setNewItem] = useState("");
+export default function SupplierCard({ supplier, items, onUpdateQuantity, supplierId, onAutoOrder }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
   const handleFieldChange = (itemId, field, value) => {
@@ -32,19 +31,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
     }
   };
 
-  const handleAddItem = () => {
-    const trimmedItem = newItem.trim();
-    if (trimmedItem && trimmedItem.length > 0) {
-      onAddItem(supplierId, trimmedItem);
-      setNewItem("");
-    }
-  };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleAddItem();
-    }
-  };
 
   const getStockStatus = (onHandQty) => {
     if (onHandQty === 0) return { 
@@ -492,31 +479,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
               })}
             </div>
           </div>
-          
-          {/* Add New Item - Mobile Optimized */}
-          <div className="bg-slate-700 px-4 py-4 border-t border-slate-600">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="text"
-                placeholder="Add new item..."
-                value={newItem}
-                onChange={(e) => setNewItem(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="flex-1 px-4 py-3 lg:py-2 text-base lg:text-sm border border-slate-600 bg-slate-800 text-slate-100 placeholder-slate-400 rounded-lg focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
-                maxLength={100}
-              />
-              <button
-                onClick={handleAddItem}
-                disabled={!newItem.trim()}
-                className="px-6 py-3 lg:py-2 bg-blue-600 text-white text-base lg:text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-3 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors touch-manipulation min-h-[44px]"
-              >
-                <span className="flex items-center justify-center">
-                  <span className="mr-2">+</span>
-                  <span>Add Item</span>
-                </span>
-              </button>
-            </div>
-          </div>
+
         </div>
       )}
     </div>

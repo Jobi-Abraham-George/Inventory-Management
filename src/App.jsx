@@ -317,44 +317,7 @@ export default function App() {
     }
   };
 
-  // Add new inventory item
-  const addInventoryItem = (supplierId, newItemName) => {
-    if (!data || !data.suppliers || !data.suppliers[supplierId]) {
-      setError("Invalid supplier");
-      return;
-    }
 
-    try {
-      const updatedData = { ...data };
-      const newItemId = `item-${Date.now()}`;
-      const newItem = {
-        id: newItemId,
-        name: newItemName,
-        supplierId: supplierId,
-        onHandQty: 0,
-        quantity: 0,
-        fixCount: 0,
-        uom: "pieces",
-        caseQty: 1,
-        pricing: {
-          unitCost: 0,
-          casePrice: 0,
-          lastUpdated: new Date().toLocaleDateString()
-        },
-        updatedAt: new Date().toLocaleDateString(),
-      };
-
-      updatedData.inventory.push(newItem);
-      setData(updatedData);
-      
-      if (error) {
-        setError(null);
-      }
-    } catch (error) {
-      console.error("Error adding item:", error);
-      setError("Failed to add new item.");
-    }
-  };
 
   // Advanced add inventory item with full data (for supplier management)
   const addInventoryItemFull = (supplierId, itemData) => {
@@ -1225,7 +1188,6 @@ export default function App() {
                     supplier={supplierName}
                     items={items}
                     onUpdateQuantity={updateInventoryItem}
-                    onAddItem={addInventoryItem}
                     supplierId={items[0]?.supplierId}
                     onAutoOrder={handleAutoOrder}
                   />

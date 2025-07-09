@@ -924,22 +924,24 @@ export default function App() {
             </div>
             
             {/* Header Actions */}
-            <div className="flex items-center gap-3">
-              <button className="hidden sm:flex items-center px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-all duration-200 text-sm border-0 outline-none">
-                Export
-              </button>
-              <button className="hidden sm:flex items-center px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-all duration-200 text-sm border-0 outline-none">
-                Import
-              </button>
-              <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm border-0 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                <span className="hidden sm:inline">
-                  {activeTab === 'inventory' && '+ Add Item'}
-                  {activeTab === 'suppliers' && '+ Add Supplier'}
-                  {activeTab !== 'inventory' && activeTab !== 'suppliers' && '+ Add'}
-                </span>
-                <span className="sm:hidden">+</span>
-              </button>
-            </div>
+            {activeTab !== 'dashboard' && (
+              <div className="flex items-center gap-3">
+                <button className="hidden sm:flex items-center px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-all duration-200 text-sm border-0 outline-none">
+                  Export
+                </button>
+                <button className="hidden sm:flex items-center px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-all duration-200 text-sm border-0 outline-none">
+                  Import
+                </button>
+                <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm border-0 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                  <span className="hidden sm:inline">
+                    {activeTab === 'inventory' && '+ Add Item'}
+                    {activeTab === 'suppliers' && '+ Add Supplier'}
+                    {activeTab !== 'inventory' && activeTab !== 'suppliers' && '+ Add'}
+                  </span>
+                  <span className="sm:hidden">+</span>
+                </button>
+              </div>
+            )}
           </div>
         </header>
 

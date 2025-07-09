@@ -33,19 +33,21 @@ export default function OrderManagement({
     return stats;
   }, [orders]);
 
-  // Get items that need to be ordered (low stock or out of stock)
+  // Get items that need to be ordered (based on fix count)
   const itemsToOrder = useMemo(() => {
     if (!inventory || !suppliers) return [];
     
     return inventory.filter(item => {
       const onHand = item.onHandQty || 0;
+      const fixCount = item.fixCount || 0;
       const orderQty = item.quantity || 0;
-      return onHand <= 5 || orderQty > 0; // Low stock or has order quantity
+      return fixCount > 0 && onHand < fixCount; // Items below fix count level
     }).map(item => ({
       ...item,
       supplierName: suppliers[item.supplierId]?.name || 'Unknown Supplier',
-      suggestedQty: Math.max(item.quantity || 0, (item.caseQty || 1) * 2),
-      estimatedCost: (item.pricing?.casePrice || 0) * Math.ceil((item.quantity || 0) / (item.caseQty || 1))
+      suggestedQty: Math.max(item.quantity || 0, (item.fixCount || 0) - (item.onHandQty || 0)),
+      estimatedCost: (item.pricing?.casePrice || 0) * Math.ceil((item.quantity || 0) / (item.caseQty || 1)),
+      shortfall: (item.fixCount || 0) - (item.onHandQty || 0)
     }));
   }, [inventory, suppliers]);
 
@@ -221,13 +223,14 @@ export default function OrderManagement({
           {/* Items Needing Orders */}
           <div className="bg-slate-800 rounded-lg border border-slate-700 p-6">
             <h3 className="text-xl font-semibold text-slate-100 mb-4">
-              🚨 Items Needing Orders ({itemsToOrder.length})
+              🚨 Items Below Fix Count ({itemsToOrder.length})
             </h3>
             
             {itemsToOrder.length === 0 ? (
               <div className="text-center py-8">
                 <div className="text-4xl mb-2">✅</div>
-                <p className="text-slate-400">All items are well stocked!</p>
+                <p className="text-slate-400">All items are at or above fix count levels!</p>
+                <p className="text-xs text-slate-500 mt-2">Set fix count levels for items to enable auto-ordering</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -250,15 +253,15 @@ export default function OrderManagement({
                         <div key={item.id} className="bg-slate-800 p-3 rounded border border-slate-600">
                           <div className="flex justify-between items-start mb-2">
                             <span className="font-medium text-slate-100 text-sm">{item.name}</span>
-                            <span className={`px-2 py-1 rounded text-xs ${
-                              item.onHandQty === 0 ? 'bg-red-600 text-red-100' : 'bg-orange-600 text-orange-100'
-                            }`}>
-                              {item.onHandQty === 0 ? 'Out' : 'Low'}
+                            <span className="px-2 py-1 rounded text-xs bg-red-600 text-red-100">
+                              Below Fix Count
                             </span>
                           </div>
                           <div className="text-xs text-slate-400 space-y-1">
+                            <div>Fix Count: {item.fixCount || 0} {item.uom}</div>
                             <div>On Hand: {item.onHandQty || 0} {item.uom}</div>
-                            <div>Suggested: {item.suggestedQty} {item.uom}</div>
+                            <div>Shortfall: {item.shortfall} {item.uom}</div>
+                            <div>Auto-Order: {item.quantity || 0} {item.uom}</div>
                             <div>Est. Cost: {formatCurrency(item.estimatedCost)}</div>
                           </div>
                         </div>
@@ -283,7 +286,14 @@ export default function OrderManagement({
                 {orders.slice(0, 5).map(order => (
                   <div key={order.id} className="bg-slate-700 rounded-lg p-4 flex justify-between items-center">
                     <div>
-                      <div className="font-medium text-slate-100">Order #{order.id}</div>
+                      <div className="flex items-center">
+                        <span className="font-medium text-slate-100">Order #{order.id}</span>
+                        {order.isAutoOrder && (
+                          <span className="ml-2 px-2 py-1 bg-green-600 text-green-100 rounded text-xs">
+                            AUTO
+                          </span>
+                        )}
+                      </div>
                       <div className="text-sm text-slate-400">
                         {order.supplierName} • {order.items.length} items • {order.orderDate}
                       </div>
@@ -492,7 +502,16 @@ export default function OrderManagement({
                   <tbody>
                     {orders.map(order => (
                       <tr key={order.id} className="border-b border-slate-700 hover:bg-slate-700/50">
-                        <td className="py-3 px-4 text-slate-100">#{order.id}</td>
+                        <td className="py-3 px-4 text-slate-100">
+                          <div className="flex items-center">
+                            #{order.id}
+                            {order.isAutoOrder && (
+                              <span className="ml-2 px-2 py-1 bg-green-600 text-green-100 rounded text-xs">
+                                AUTO
+                              </span>
+                            )}
+                          </div>
+                        </td>
                         <td className="py-3 px-4 text-slate-100">{order.supplierName}</td>
                         <td className="py-3 px-4 text-slate-400">{order.items.length} items</td>
                         <td className="py-3 px-4 text-slate-100">{formatCurrency(order.totalAmount)}</td>

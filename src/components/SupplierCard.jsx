@@ -1,12 +1,35 @@
 import { useState } from "react";
 
-export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddItem, supplierId }) {
+export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddItem, supplierId, onAutoOrder }) {
   const [newItem, setNewItem] = useState("");
   const [isExpanded, setIsExpanded] = useState(true);
 
   const handleFieldChange = (itemId, field, value) => {
     const parsedValue = field === 'uom' ? value : (value === "" ? 0 : Math.max(0, parseInt(value, 10) || 0));
+    
+    // Find the current item to get its data
+    const currentItem = items.find(item => item.id === itemId);
+    if (!currentItem) return;
+    
+    // Update the field first
     onUpdateQuantity(itemId, field, parsedValue);
+    
+    // Auto-calculate order quantity when onHandQty or fixCount is updated
+    if (field === 'onHandQty' || field === 'fixCount') {
+      const onHandQty = field === 'onHandQty' ? parsedValue : (currentItem.onHandQty || 0);
+      const fixCount = field === 'fixCount' ? parsedValue : (currentItem.fixCount || 0);
+      
+      // Calculate how many items need to be ordered
+      const orderQuantity = Math.max(0, fixCount - onHandQty);
+      
+      // Update the order quantity automatically
+      onUpdateQuantity(itemId, 'quantity', orderQuantity);
+      
+      // If order quantity > 0, trigger auto-order creation
+      if (orderQuantity > 0 && onAutoOrder) {
+        onAutoOrder(supplierId, itemId, orderQuantity);
+      }
+    }
   };
 
   const handleAddItem = () => {
@@ -249,6 +272,7 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                 <tr className="bg-slate-750 border-b border-slate-600">
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">ID ↑↓</th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-slate-300 uppercase tracking-wider">Name ↑↓</th>
+                  <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Fix Count ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">On Hand ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Order ↑↓</th>
                   <th className="px-4 py-3 text-center text-xs font-medium text-slate-300 uppercase tracking-wider">Case ↑↓</th>
@@ -274,6 +298,16 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                             </div>
                           </div>
                         </div>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <input
+                          type="number"
+                          min="0"
+                          value={item.fixCount || ''}
+                          onChange={(e) => handleFieldChange(item.id, 'fixCount', e.target.value)}
+                          className="w-16 px-2 py-1 text-sm text-center rounded border border-blue-600 bg-blue-900/20 text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="0"
+                        />
                       </td>
                       <td className="px-4 py-3 text-center">
                         <input
@@ -389,6 +423,17 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     {/* Mobile Input Grid - Optimized for Touch */}
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">🎯 Fix Count</label>
+                        <input
+                          type="number"
+                          min="0"
+                          value={item.fixCount || ''}
+                          onChange={(e) => handleFieldChange(item.id, 'fixCount', e.target.value)}
+                          className="w-full px-4 py-4 text-lg border-2 border-blue-600 bg-blue-900/20 rounded-xl text-center font-bold text-blue-300 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
+                          placeholder="0"
+                        />
+                      </div>
+                      <div>
                         <label className="block text-sm font-medium text-slate-300 mb-2">📊 On Hand</label>
                         <input
                           type="number"
@@ -404,14 +449,15 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">📦 Order</label>
+                        <label className="block text-sm font-medium text-slate-300 mb-2">📦 Order (Auto)</label>
                         <input
                           type="number"
                           min="0"
                           value={item.quantity || ''}
                           onChange={(e) => handleFieldChange(item.id, 'quantity', e.target.value)}
-                          className="w-full px-4 py-4 text-lg border-2 border-slate-600 bg-slate-700 rounded-xl text-center font-bold text-slate-100 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
+                          className="w-full px-4 py-4 text-lg border-2 border-purple-600 bg-purple-900/20 rounded-xl text-center font-bold text-purple-300 focus:outline-none focus:ring-3 focus:ring-purple-500 transition-all touch-manipulation"
                           placeholder="0"
+                          readOnly
                         />
                       </div>
                       <div>

@@ -130,6 +130,7 @@ export default function App() {
             supplierId: supplierId,
             onHandQty: item.onHandQty || 0,
             quantity: item.quantity || 0,
+            fixCount: item.fixCount || 0,
             uom: item.uom || "pieces",
             caseQty: item.caseQty || 1,
             pricing: {
@@ -145,6 +146,22 @@ export default function App() {
     });
 
     return { suppliers, inventory };
+  };
+
+  // Migration function to add fixCount to existing data
+  const migrateToFixCount = (data) => {
+    console.log("Adding fixCount field to existing inventory...");
+    
+    const updatedData = { ...data };
+    
+    if (updatedData.inventory) {
+      updatedData.inventory = updatedData.inventory.map(item => ({
+        ...item,
+        fixCount: item.fixCount || 0
+      }));
+    }
+    
+    return updatedData;
   };
 
   // Initialize data from localStorage or use initial data
@@ -163,8 +180,16 @@ export default function App() {
       if (saved) {
         const parsedData = JSON.parse(saved);
         if (typeof parsedData === 'object' && parsedData !== null && parsedData.suppliers && parsedData.inventory) {
-          // New data structure
-          setData(parsedData);
+          // New data structure - check if fixCount migration is needed
+          const needsFixCountMigration = parsedData.inventory.some(item => !item.hasOwnProperty('fixCount'));
+          
+          if (needsFixCountMigration) {
+            const migratedData = migrateToFixCount(parsedData);
+            setData(migratedData);
+            console.log("Fix count migration completed successfully!");
+          } else {
+            setData(parsedData);
+          }
         } else if (typeof parsedData === 'object' && parsedData !== null) {
           // Check if it's old data structure (object with supplier names as keys)
           const isOldStructure = Object.keys(parsedData).some(key => 
@@ -393,6 +418,96 @@ export default function App() {
     } catch (error) {
       console.error("Error updating order:", error);
       setError("Failed to update order.");
+    }
+  };
+
+  // Auto-order creation function
+  const handleAutoOrder = (supplierId, itemId, orderQuantity) => {
+    try {
+      const supplier = data.suppliers[supplierId];
+      const item = data.inventory.find(inv => inv.id === itemId);
+      
+      if (!supplier || !item) return;
+
+      // Check if there's already a pending auto-order for this supplier
+      const existingAutoOrder = orders.find(order => 
+        order.supplierId === supplierId && 
+        order.status === 'pending' && 
+        order.isAutoOrder
+      );
+
+      if (existingAutoOrder) {
+        // Update existing auto-order
+        const itemIndex = existingAutoOrder.items.findIndex(orderItem => orderItem.id === itemId);
+        
+        if (itemIndex >= 0) {
+          // Update existing item in order
+          const updatedItems = [...existingAutoOrder.items];
+          updatedItems[itemIndex] = {
+            ...updatedItems[itemIndex],
+            quantity: orderQuantity,
+            estimatedCost: (item.pricing?.casePrice || 0) * Math.ceil(orderQuantity / (item.caseQty || 1))
+          };
+          
+          const updatedOrder = {
+            ...existingAutoOrder,
+            items: updatedItems,
+            totalAmount: updatedItems.reduce((sum, orderItem) => sum + orderItem.estimatedCost, 0),
+            updatedAt: new Date().toISOString()
+          };
+          
+          updateOrder(existingAutoOrder.id, updatedOrder);
+        } else {
+          // Add new item to existing order
+          const newItem = {
+            ...item,
+            quantity: orderQuantity,
+            estimatedCost: (item.pricing?.casePrice || 0) * Math.ceil(orderQuantity / (item.caseQty || 1))
+          };
+          
+          const updatedItems = [...existingAutoOrder.items, newItem];
+          const updatedOrder = {
+            ...existingAutoOrder,
+            items: updatedItems,
+            totalAmount: updatedItems.reduce((sum, orderItem) => sum + orderItem.estimatedCost, 0),
+            updatedAt: new Date().toISOString()
+          };
+          
+          updateOrder(existingAutoOrder.id, updatedOrder);
+        }
+      } else {
+        // Create new auto-order
+        const newItem = {
+          ...item,
+          quantity: orderQuantity,
+          estimatedCost: (item.pricing?.casePrice || 0) * Math.ceil(orderQuantity / (item.caseQty || 1))
+        };
+
+        const autoOrder = {
+          id: `auto-order-${Date.now()}`,
+          supplierId: supplierId,
+          supplierName: supplier.name,
+          items: [newItem],
+          status: 'pending',
+          totalAmount: newItem.estimatedCost,
+          orderDate: new Date().toLocaleDateString(),
+          expectedDelivery: '',
+          priority: 'medium',
+          notes: 'Auto-generated order based on fix count levels',
+          isAutoOrder: true,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+
+        createOrder(autoOrder);
+      }
+      
+      if (error) {
+        setError(null);
+      }
+    } catch (error) {
+      console.error("Error creating auto-order:", error);
+      setError("Failed to create auto-order.");
     }
   };
 
@@ -937,7 +1052,14 @@ export default function App() {
               <div className="mb-6">
                 <div className="bg-slate-800 rounded-lg border border-slate-700 p-4">
                   <h3 className="text-lg font-semibold text-slate-100 mb-4">📚 Field Reference Guide</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div className="flex items-center p-3 bg-slate-700 rounded-lg">
+                      <span className="text-2xl mr-3">🎯</span>
+                      <div>
+                        <div className="font-medium text-slate-100">Fix Count</div>
+                        <div className="text-sm text-slate-400">Minimum stock level that should always be maintained</div>
+                      </div>
+                    </div>
                     <div className="flex items-center p-3 bg-slate-700 rounded-lg">
                       <span className="text-2xl mr-3">📊</span>
                       <div>
@@ -948,8 +1070,8 @@ export default function App() {
                     <div className="flex items-center p-3 bg-slate-700 rounded-lg">
                       <span className="text-2xl mr-3">📦</span>
                       <div>
-                        <div className="font-medium text-slate-100">Order</div>
-                        <div className="text-sm text-slate-400">Quantities needed to order from suppliers</div>
+                        <div className="font-medium text-slate-100">Order (Auto)</div>
+                        <div className="text-sm text-slate-400">Auto-calculated order quantity based on fix count</div>
                       </div>
                     </div>
                     <div className="flex items-center p-3 bg-slate-700 rounded-lg">
@@ -967,7 +1089,12 @@ export default function App() {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-4 p-3 bg-blue-900/30 border border-blue-600 rounded-lg">
+                  <div className="mt-4 p-3 bg-green-900/30 border border-green-600 rounded-lg">
+                    <div className="text-sm text-green-200">
+                      <span className="font-medium">🚀 Auto-Order System:</span> Set Fix Count → Update On Hand → System auto-calculates Order quantity → Auto-orders created when needed!
+                    </div>
+                  </div>
+                  <div className="mt-2 p-3 bg-blue-900/30 border border-blue-600 rounded-lg">
                     <div className="text-sm text-blue-200">
                       <span className="font-medium">💡 Pro Tip:</span> Use the search bar to find items by name, supplier, or unit. 
                       Use quick filters to view items by stock status (Out of Stock, Low Stock, In Stock).
@@ -986,6 +1113,7 @@ export default function App() {
                     onUpdateQuantity={updateInventoryItem}
                     onAddItem={addInventoryItem}
                     supplierId={items[0]?.supplierId}
+                    onAutoOrder={handleAutoOrder}
                   />
                 ))}
               </div>

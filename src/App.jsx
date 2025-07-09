@@ -3,7 +3,7 @@ import SupplierCard from "./components/SupplierCard";
 import SupplierManagement from "./components/SupplierManagement";
 import SearchAndFilters from "./components/SearchAndFilters";
 import OrderManagement from "./components/OrderManagement";
-import PWAInstallButton from "./components/PWAInstallButton";
+
 import Dashboard from "./components/Dashboard";
 import initialData from "./data/initialData.json";
 
@@ -178,18 +178,7 @@ export default function App() {
     };
     console.log('🔧 Debug: Run window.clearInvotraqData() to clear all data and refresh');
 
-    // Register Service Worker for PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then((registration) => {
-            console.log('PWA: Service Worker registered successfully:', registration);
-          })
-          .catch((error) => {
-            console.log('PWA: Service Worker registration failed:', error);
-          });
-      });
-    }
+
 
     // Add navigation event listener for dashboard alerts
     const handleNavigateToTab = (event) => {
@@ -936,7 +925,6 @@ export default function App() {
             
             {/* Header Actions - Mobile Responsive */}
             <div className="flex items-center space-x-2 lg:space-x-3">
-              <PWAInstallButton />
               <button className="hidden sm:flex px-3 lg:px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm">
                 Export
               </button>

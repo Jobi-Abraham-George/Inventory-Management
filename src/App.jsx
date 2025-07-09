@@ -923,15 +923,15 @@ export default function App() {
               </div>
             </div>
             
-            {/* Header Actions - Mobile Responsive */}
-            <div className="flex items-center space-x-2 lg:space-x-3">
-              <button className="hidden sm:flex px-3 lg:px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm">
+            {/* Header Actions */}
+            <div className="flex items-center gap-3">
+              <button className="hidden sm:flex items-center px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-all duration-200 text-sm border-0 outline-none">
                 Export
               </button>
-              <button className="hidden sm:flex px-3 lg:px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-colors text-sm">
+              <button className="hidden sm:flex items-center px-4 py-2 bg-slate-700 text-slate-300 rounded-lg hover:bg-slate-600 transition-all duration-200 text-sm border-0 outline-none">
                 Import
               </button>
-              <button className="px-3 lg:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm touch-manipulation">
+              <button className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm border-0 outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                 <span className="hidden sm:inline">
                   {activeTab === 'inventory' && '+ Add Item'}
                   {activeTab === 'suppliers' && '+ Add Supplier'}

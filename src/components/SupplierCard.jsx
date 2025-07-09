@@ -14,10 +14,10 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
     // Update the field first
     onUpdateQuantity(itemId, field, parsedValue);
     
-    // Auto-calculate order quantity when onHandQty or fixCount is updated
-    if (field === 'onHandQty' || field === 'fixCount') {
-      const onHandQty = field === 'onHandQty' ? parsedValue : (currentItem.onHandQty || 0);
-      const fixCount = field === 'fixCount' ? parsedValue : (currentItem.fixCount || 0);
+    // Auto-calculate order quantity when onHandQty is updated (fixCount is read-only in inventory)
+    if (field === 'onHandQty') {
+      const onHandQty = parsedValue;
+      const fixCount = currentItem.fixCount || 0;
       
       // Calculate how many items need to be ordered
       const orderQuantity = Math.max(0, fixCount - onHandQty);
@@ -300,14 +300,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                         </div>
                       </td>
                       <td className="px-4 py-3 text-center">
-                        <input
-                          type="number"
-                          min="0"
-                          value={item.fixCount || ''}
-                          onChange={(e) => handleFieldChange(item.id, 'fixCount', e.target.value)}
-                          className="w-16 px-2 py-1 text-sm text-center rounded border border-blue-600 bg-blue-900/20 text-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          placeholder="0"
-                        />
+                        <div className="w-16 px-2 py-1 text-sm text-center rounded border border-blue-600 bg-blue-900/10 text-blue-300 cursor-not-allowed">
+                          {item.fixCount || 0}
+                        </div>
                       </td>
                       <td className="px-4 py-3 text-center">
                         <input
@@ -424,14 +419,9 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                     <div className="grid grid-cols-2 gap-4 mb-4">
                       <div>
                         <label className="block text-sm font-medium text-slate-300 mb-2">🎯 Fix Count</label>
-                        <input
-                          type="number"
-                          min="0"
-                          value={item.fixCount || ''}
-                          onChange={(e) => handleFieldChange(item.id, 'fixCount', e.target.value)}
-                          className="w-full px-4 py-4 text-lg border-2 border-blue-600 bg-blue-900/20 rounded-xl text-center font-bold text-blue-300 focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
-                          placeholder="0"
-                        />
+                        <div className="w-full px-4 py-4 text-lg border-2 border-blue-600 bg-blue-900/10 rounded-xl text-center font-bold text-blue-300 cursor-not-allowed">
+                          {item.fixCount || 0}
+                        </div>
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-slate-300 mb-2">📊 On Hand</label>

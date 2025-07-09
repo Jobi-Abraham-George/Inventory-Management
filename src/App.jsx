@@ -178,22 +178,6 @@ export default function App() {
     };
     console.log('🔧 Debug: Run window.clearInvotraqData() to clear all data and refresh');
 
-
-
-    // Add navigation event listener for dashboard alerts
-    const handleNavigateToTab = (event) => {
-      const { tab } = event.detail;
-      if (tab) {
-        setActiveTab(tab);
-      }
-    };
-
-    window.addEventListener('navigateToTab', handleNavigateToTab);
-
-    return () => {
-      window.removeEventListener('navigateToTab', handleNavigateToTab);
-    };
-    
     try {
       const saved = localStorage.getItem("inventoryData");
       if (saved) {
@@ -251,6 +235,22 @@ export default function App() {
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  // Add navigation event listener for dashboard alerts
+  useEffect(() => {
+    const handleNavigateToTab = (event) => {
+      const { tab } = event.detail;
+      if (tab) {
+        setActiveTab(tab);
+      }
+    };
+
+    window.addEventListener('navigateToTab', handleNavigateToTab);
+
+    return () => {
+      window.removeEventListener('navigateToTab', handleNavigateToTab);
+    };
   }, []);
 
   // Save data to localStorage whenever it changes

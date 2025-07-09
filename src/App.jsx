@@ -148,16 +148,17 @@ export default function App() {
     return { suppliers, inventory };
   };
 
-  // Migration function to add fixCount to existing data
+  // Migration function to add fixCount and image to existing data
   const migrateToFixCount = (data) => {
-    console.log("Adding fixCount field to existing inventory...");
+    console.log("Adding fixCount and image fields to existing inventory...");
     
     const updatedData = { ...data };
     
     if (updatedData.inventory) {
       updatedData.inventory = updatedData.inventory.map(item => ({
         ...item,
-        fixCount: item.fixCount || 0
+        fixCount: item.fixCount || 0,
+        image: item.image || null
       }));
     }
     
@@ -180,13 +181,15 @@ export default function App() {
       if (saved) {
         const parsedData = JSON.parse(saved);
         if (typeof parsedData === 'object' && parsedData !== null && parsedData.suppliers && parsedData.inventory) {
-          // New data structure - check if fixCount migration is needed
-          const needsFixCountMigration = parsedData.inventory.some(item => !item.hasOwnProperty('fixCount'));
+          // New data structure - check if fixCount or image migration is needed
+          const needsMigration = parsedData.inventory.some(item => 
+            !item.hasOwnProperty('fixCount') || !item.hasOwnProperty('image')
+          );
           
-          if (needsFixCountMigration) {
+          if (needsMigration) {
             const migratedData = migrateToFixCount(parsedData);
             setData(migratedData);
-            console.log("Fix count migration completed successfully!");
+            console.log("Data migration completed successfully!");
           } else {
             setData(parsedData);
           }
@@ -316,6 +319,7 @@ export default function App() {
         supplierId: supplierId,
         onHandQty: 0,
         quantity: 0,
+        fixCount: 0,
         uom: "pieces",
         caseQty: 1,
         pricing: {
@@ -335,6 +339,101 @@ export default function App() {
     } catch (error) {
       console.error("Error adding item:", error);
       setError("Failed to add new item.");
+    }
+  };
+
+  // Advanced add inventory item with full data (for supplier management)
+  const addInventoryItemFull = (supplierId, itemData) => {
+    if (!data || !data.suppliers || !data.suppliers[supplierId]) {
+      setError("Invalid supplier");
+      return;
+    }
+
+    try {
+      const updatedData = { ...data };
+      const newItemId = `item-${Date.now()}`;
+      const newItem = {
+        id: newItemId,
+        name: itemData.name,
+        supplierId: supplierId,
+        onHandQty: itemData.onHandQty || 0,
+        quantity: itemData.quantity || 0,
+        fixCount: itemData.fixCount || 0,
+        uom: itemData.uom || "pieces",
+        caseQty: itemData.caseQty || 1,
+        image: itemData.image || null,
+        pricing: itemData.pricing || {
+          unitCost: 0,
+          casePrice: 0,
+          lastUpdated: new Date().toLocaleDateString()
+        },
+        updatedAt: new Date().toLocaleDateString(),
+      };
+
+      updatedData.inventory.push(newItem);
+      setData(updatedData);
+      
+      if (error) {
+        setError(null);
+      }
+    } catch (error) {
+      console.error("Error adding item:", error);
+      setError("Failed to add new item.");
+    }
+  };
+
+  // Update inventory item with full data
+  const updateInventoryItemFull = (itemId, itemData) => {
+    if (!data || !data.inventory) {
+      setError("Invalid data structure");
+      return;
+    }
+
+    try {
+      const updatedData = { ...data };
+      const itemIndex = updatedData.inventory.findIndex(item => item.id === itemId);
+      
+      if (itemIndex === -1) {
+        setError("Item not found");
+        return;
+      }
+
+      updatedData.inventory[itemIndex] = {
+        ...updatedData.inventory[itemIndex],
+        ...itemData,
+        updatedAt: new Date().toLocaleDateString()
+      };
+      
+      setData(updatedData);
+      
+      if (error) {
+        setError(null);
+      }
+    } catch (error) {
+      console.error("Error updating item:", error);
+      setError("Failed to update item.");
+    }
+  };
+
+  // Delete inventory item
+  const deleteInventoryItem = (itemId) => {
+    if (!data || !data.inventory) {
+      setError("Invalid data structure");
+      return;
+    }
+
+    try {
+      const updatedData = { ...data };
+      updatedData.inventory = updatedData.inventory.filter(item => item.id !== itemId);
+      
+      setData(updatedData);
+      
+      if (error) {
+        setError(null);
+      }
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      setError("Failed to delete item.");
     }
   };
 
@@ -1149,6 +1248,9 @@ export default function App() {
               onUpdateSupplier={updateSupplier}
               onAddSupplier={addSupplier}
               onDeleteSupplier={deleteSupplier}
+              onAddItem={addInventoryItemFull}
+              onUpdateItem={updateInventoryItemFull}
+              onDeleteItem={deleteInventoryItem}
             />
           )}
 

@@ -650,28 +650,28 @@ export default function SupplierManagement({
                         <label className="block text-sm font-medium text-slate-300 mb-2">
                           📏 UOM
                         </label>
-                        <select
-                          value={itemFormData.uom}
-                          onChange={(e) => setItemFormData(prev => ({ ...prev, uom: e.target.value }))}
-                          className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500"
-                        >
-                          <option value="pieces">Pieces</option>
-                          <option value="lbs">Pounds</option>
-                          <option value="gallons">Gallons</option>
-                          <option value="bottles">Bottles</option>
-                          <option value="jars">Jars</option>
-                          <option value="packages">Packages</option>
-                          <option value="bags">Bags</option>
-                          <option value="heads">Heads</option>
-                          <option value="cans">Cans</option>
-                          <option value="containers">Containers</option>
-                          <option value="trays">Trays</option>
-                          <option value="sheets">Sheets</option>
-                          <option value="sets">Sets</option>
-                          <option value="loaves">Loaves</option>
-                          <option value="cases">Cases</option>
-                          <option value="rolls">Rolls</option>
-                        </select>
+                                                 <select
+                           value={itemFormData.uom}
+                           onChange={(e) => setItemFormData(prev => ({ ...prev, uom: e.target.value }))}
+                           className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-slate-100 focus:outline-none focus:border-blue-500"
+                         >
+                           <option value="bags">Bags</option>
+                           <option value="bottles">Bottles</option>
+                           <option value="cans">Cans</option>
+                           <option value="cases">Cases</option>
+                           <option value="containers">Containers</option>
+                           <option value="gallons">Gallons</option>
+                           <option value="heads">Heads</option>
+                           <option value="jars">Jars</option>
+                           <option value="lbs">Pounds</option>
+                           <option value="loaves">Loaves</option>
+                           <option value="packages">Packages</option>
+                           <option value="pieces">Pieces</option>
+                           <option value="rolls">Rolls</option>
+                           <option value="sets">Sets</option>
+                           <option value="sheets">Sheets</option>
+                           <option value="trays">Trays</option>
+                         </select>
                       </div>
                     </div>
 

@@ -349,22 +349,22 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           onChange={(e) => handleFieldChange(item.id, 'uom', e.target.value)}
                           className="w-20 px-1 py-1 text-xs border border-slate-600 bg-slate-700 text-slate-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                          <option value="pieces">pieces</option>
-                          <option value="lbs">lbs</option>
-                          <option value="gallons">gallons</option>
-                          <option value="bottles">bottles</option>
-                          <option value="jars">jars</option>
-                          <option value="packages">packages</option>
                           <option value="bags">bags</option>
-                          <option value="heads">heads</option>
+                          <option value="bottles">bottles</option>
                           <option value="cans">cans</option>
-                          <option value="containers">containers</option>
-                          <option value="trays">trays</option>
-                          <option value="sheets">sheets</option>
-                          <option value="sets">sets</option>
-                          <option value="loaves">loaves</option>
                           <option value="cases">cases</option>
+                          <option value="containers">containers</option>
+                          <option value="gallons">gallons</option>
+                          <option value="heads">heads</option>
+                          <option value="jars">jars</option>
+                          <option value="lbs">lbs</option>
+                          <option value="loaves">loaves</option>
+                          <option value="packages">packages</option>
+                          <option value="pieces">pieces</option>
                           <option value="rolls">rolls</option>
+                          <option value="sets">sets</option>
+                          <option value="sheets">sheets</option>
+                          <option value="trays">trays</option>
                         </select>
                       </td>
                       <td className="px-4 py-3 text-center">
@@ -478,22 +478,22 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           onChange={(e) => handleFieldChange(item.id, 'uom', e.target.value)}
                           className="w-full px-4 py-4 text-base border-2 border-slate-600 bg-slate-700 text-slate-100 rounded-xl focus:outline-none focus:ring-3 focus:ring-blue-500 transition-all touch-manipulation"
                         >
-                          <option value="pieces">Pieces</option>
-                          <option value="lbs">Pounds</option>
-                          <option value="gallons">Gallons</option>
-                          <option value="bottles">Bottles</option>
-                          <option value="jars">Jars</option>
-                          <option value="packages">Packages</option>
                           <option value="bags">Bags</option>
-                          <option value="heads">Heads</option>
+                          <option value="bottles">Bottles</option>
                           <option value="cans">Cans</option>
-                          <option value="containers">Containers</option>
-                          <option value="trays">Trays</option>
-                          <option value="sheets">Sheets</option>
-                          <option value="sets">Sets</option>
-                          <option value="loaves">Loaves</option>
                           <option value="cases">Cases</option>
+                          <option value="containers">Containers</option>
+                          <option value="gallons">Gallons</option>
+                          <option value="heads">Heads</option>
+                          <option value="jars">Jars</option>
+                          <option value="lbs">Pounds</option>
+                          <option value="loaves">Loaves</option>
+                          <option value="packages">Packages</option>
+                          <option value="pieces">Pieces</option>
                           <option value="rolls">Rolls</option>
+                          <option value="sets">Sets</option>
+                          <option value="sheets">Sheets</option>
+                          <option value="trays">Trays</option>
                         </select>
                       </div>
                     </div>

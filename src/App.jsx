@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import SupplierCard from "./components/SupplierCard";
 import SupplierManagement from "./components/SupplierManagement";
 import SearchAndFilters from "./components/SearchAndFilters";
+import OrderManagement from "./components/OrderManagement";
 import initialData from "./data/initialData.json";
 
 // Simple Error Boundary Component
@@ -49,8 +50,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
-
+  const [orders, setOrders] = useState([]);
   
   // Search and Filter States
   const [searchQuery, setSearchQuery] = useState("");
@@ -153,6 +153,7 @@ export default function App() {
     window.clearInvotraqData = () => {
       localStorage.removeItem('inventory');
       localStorage.removeItem('inventoryData');
+      localStorage.removeItem('orders');
       window.location.reload();
     };
     console.log('🔧 Debug: Run window.clearInvotraqData() to clear all data and refresh');
@@ -217,6 +218,29 @@ export default function App() {
       }
     }
   }, [data]);
+
+  // Save orders to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem("orders", JSON.stringify(orders));
+    } catch (error) {
+      console.error("Error saving orders to localStorage:", error);
+      setError("Failed to save orders.");
+    }
+  }, [orders]);
+
+  // Load orders from localStorage on startup
+  useEffect(() => {
+    try {
+      const savedOrders = localStorage.getItem("orders");
+      if (savedOrders) {
+        setOrders(JSON.parse(savedOrders));
+      }
+    } catch (error) {
+      console.error("Error loading orders from localStorage:", error);
+      setError("Failed to load saved orders.");
+    }
+  }, []);
 
   // Update inventory item
   const updateInventoryItem = (itemId, field, value) => {
@@ -338,6 +362,37 @@ export default function App() {
     } catch (error) {
       console.error("Error deleting supplier:", error);
       setError("Failed to delete supplier.");
+    }
+  };
+
+  // Order management functions
+  const createOrder = (order) => {
+    try {
+      setOrders(prev => [...prev, order]);
+      
+      if (error) {
+        setError(null);
+      }
+    } catch (error) {
+      console.error("Error creating order:", error);
+      setError("Failed to create order.");
+    }
+  };
+
+  const updateOrder = (orderId, updatedOrder) => {
+    try {
+      setOrders(prev => 
+        prev.map(order => 
+          order.id === orderId ? { ...order, ...updatedOrder } : order
+        )
+      );
+      
+      if (error) {
+        setError(null);
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
+      setError("Failed to update order.");
     }
   };
 
@@ -971,37 +1026,14 @@ export default function App() {
 
           {/* Orders Tab */}
           {activeTab === 'orders' && (
-            <div className="py-6">
-              <div className="text-center py-12">
-                <div className="text-6xl mb-4">📋</div>
-                <h3 className="text-2xl font-semibold text-slate-100 mb-4">Order Management</h3>
-                <p className="text-slate-400 mb-6">Create, track, and manage purchase orders</p>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                    <div className="text-3xl mb-3">📝</div>
-                    <h4 className="font-semibold text-slate-100 mb-2">Create Orders</h4>
-                    <p className="text-slate-400 text-sm">Generate purchase orders automatically</p>
-                  </div>
-                  
-                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                    <div className="text-3xl mb-3">🚚</div>
-                    <h4 className="font-semibold text-slate-100 mb-2">Track Deliveries</h4>
-                    <p className="text-slate-400 text-sm">Monitor order status and delivery</p>
-                  </div>
-                  
-                  <div className="bg-slate-800 p-6 rounded-lg border border-slate-700">
-                    <div className="text-3xl mb-3">💰</div>
-                    <h4 className="font-semibold text-slate-100 mb-2">Cost Analysis</h4>
-                    <p className="text-slate-400 text-sm">Track spending and optimize costs</p>
-                  </div>
-                </div>
-
-                <button className="mt-6 px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors">
-                  Create New Order
-                </button>
-              </div>
-            </div>
+            <OrderManagement
+              suppliers={data?.suppliers || {}}
+              inventory={data?.inventory || []}
+              orders={orders}
+              onCreateOrder={createOrder}
+              onUpdateOrder={updateOrder}
+              onUpdateInventory={updateInventoryItem}
+            />
           )}
 
           {/* Reports Tab */}

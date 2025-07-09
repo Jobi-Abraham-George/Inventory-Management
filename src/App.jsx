@@ -4,10 +4,7 @@ import SupplierManagement from "./components/SupplierManagement";
 import SearchAndFilters from "./components/SearchAndFilters";
 import OrderManagement from "./components/OrderManagement";
 import PWAInstallButton from "./components/PWAInstallButton";
-import DashboardAlerts from "./components/DashboardAlerts";
-import DashboardCharts from "./components/DashboardCharts";
-import RecentActivity from "./components/RecentActivity";
-import DashboardKPIs from "./components/DashboardKPIs";
+import Dashboard from "./components/Dashboard";
 import initialData from "./data/initialData.json";
 
 // Simple Error Boundary Component
@@ -975,138 +972,12 @@ export default function App() {
 
         {/* Content Area - Mobile Responsive */}
         <div className="px-4 lg:px-6 pb-6">
-          {/* Enhanced Dashboard Tab */}
+          {/* Dashboard Tab */}
           {activeTab === 'dashboard' && (
             <div className="py-6">
-              {/* Welcome Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6 text-white mb-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-3xl font-bold mb-2">🍽️ Welcome to InvoTraq</h2>
-                    <p className="text-blue-100">Your intelligent restaurant inventory management system</p>
-                  </div>
-                  <div className="hidden md:block text-right">
-                    <div className="text-sm text-blue-200">Last Updated</div>
-                    <div className="font-medium">{new Date().toLocaleString()}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Real-Time Alerts */}
-              <DashboardAlerts 
-                inventory={data?.inventory || []}
-                orders={orders}
-                suppliers={data?.suppliers || {}}
-              />
-
-              {/* Key Performance Indicators */}
-              <DashboardKPIs 
-                inventory={data?.inventory || []}
-                orders={orders}
-                suppliers={data?.suppliers || {}}
-              />
-
-              {/* Two-Column Layout for Charts and Activity */}
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-                {/* Interactive Data Visualization */}
-                <div>
-                  <DashboardCharts 
-                    inventory={data?.inventory || []}
-                    orders={orders}
-                    suppliers={data?.suppliers || {}}
-                  />
-                </div>
-
-                {/* Recent Activity Feed */}
-                <div>
-                  <RecentActivity 
-                    inventory={data?.inventory || []}
-                    orders={orders}
-                    suppliers={data?.suppliers || {}}
-                  />
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="mb-6">
-                <h3 className="text-lg font-semibold text-slate-100 mb-4">🚀 Quick Actions</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <button 
-                    onClick={() => setActiveTab('inventory')}
-                    className="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors text-left group"
-                  >
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3 group-hover:scale-110 transition-transform">📦</span>
-                      <div>
-                        <div className="font-semibold">Manage Inventory</div>
-                        <div className="text-blue-200 text-sm">View and update stock levels</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  <button 
-                    onClick={() => setActiveTab('suppliers')}
-                    className="p-4 bg-green-600 hover:bg-green-700 rounded-lg transition-colors text-left group"
-                  >
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3 group-hover:scale-110 transition-transform">🏭</span>
-                      <div>
-                        <div className="font-semibold">Manage Suppliers</div>
-                        <div className="text-green-200 text-sm">Add and edit supplier information</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  <button 
-                    onClick={() => setActiveTab('orders')}
-                    className="p-4 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors text-left group"
-                  >
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3 group-hover:scale-110 transition-transform">�</span>
-                      <div>
-                        <div className="font-semibold">Manage Orders</div>
-                        <div className="text-purple-200 text-sm">Create and track orders</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  <button 
-                    onClick={() => setActiveTab('reports')}
-                    className="p-4 bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors text-left group"
-                  >
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3 group-hover:scale-110 transition-transform">📈</span>
-                      <div>
-                        <div className="font-semibold">View Reports</div>
-                        <div className="text-orange-200 text-sm">Analyze inventory trends</div>
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              {/* System Status Footer */}
-              <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                      <span className="text-sm text-slate-300">System Online</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                      <span className="text-sm text-slate-300">Auto-orders Active</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
-                      <span className="text-sm text-slate-300">PWA Enabled</span>
-                    </div>
-                  </div>
-                  <div className="text-xs text-slate-400">
-                    Last sync: {new Date().toLocaleTimeString()}
-                  </div>
-                </div>
-              </div>
+              <ErrorBoundary>
+                <Dashboard data={data} />
+              </ErrorBoundary>
             </div>
           )}
 

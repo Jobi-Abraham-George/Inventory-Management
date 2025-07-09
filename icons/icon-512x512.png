@@ -1,0 +1,33 @@
+
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e40af;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="92.16" fill="url(#bgGradient)"/>
+  
+  <!-- Icon Content -->
+  <g transform="translate(76.8, 76.8)">
+    <!-- Clipboard/Inventory Icon -->
+    <rect x="51.2" y="25.6" width="256" height="332.8" rx="15.36" fill="#ffffff" opacity="0.9"/>
+    
+    <!-- Clipboard Header -->
+    <rect x="76.8" y="51.2" width="204.8" height="40.96" rx="10.24" fill="#e2e8f0"/>
+    
+    <!-- List Items -->
+    <rect x="76.8" y="112.64" width="179.2" height="20.48" rx="5.12" fill="#64748b"/>
+    <rect x="76.8" y="153.6" width="153.6" height="20.48" rx="5.12" fill="#64748b"/>
+    <rect x="76.8" y="194.56" width="163.84" height="20.48" rx="5.12" fill="#64748b"/>
+    <rect x="76.8" y="235.52" width="143.36" height="20.48" rx="5.12" fill="#64748b"/>
+    
+    <!-- Checkmarks -->
+    <circle cx="66.56" cy="122.88" r="7.68" fill="#22c55e"/>
+    <circle cx="66.56" cy="163.84" r="7.68" fill="#22c55e"/>
+    <circle cx="66.56" cy="204.8" r="7.68" fill="#f59e0b"/>
+    <circle cx="66.56" cy="245.76" r="7.68" fill="#ef4444"/>
+  </g>
+</svg>

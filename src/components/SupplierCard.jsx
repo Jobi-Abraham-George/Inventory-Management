@@ -271,9 +271,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                             <div className="text-sm font-medium text-slate-100 truncate">{item.name}</div>
                             <div className="text-xs text-slate-400">
                               {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
-                              {item.pricing && (
-                                <span className="ml-2">• Unit: ${(item.pricing.unitCost || 0).toFixed(2)}</span>
-                              )}
                             </div>
                           </div>
                         </div>
@@ -371,9 +368,6 @@ export default function SupplierCard({ supplier, items, onUpdateQuantity, onAddI
                           <h4 className="text-base font-semibold text-slate-100 leading-tight">{item.name}</h4>
                           <p className="text-xs text-slate-400 mt-1">
                             ID: {item.id ? item.id.toUpperCase() : `INV-${String(index + 1).padStart(3, '0')}`} • {item.updatedAt ? `Updated: ${item.updatedAt}` : "Never updated"}
-                            {item.pricing && (
-                              <span className="block">Unit Cost: ${(item.pricing.unitCost || 0).toFixed(2)}</span>
-                            )}
                           </p>
                         </div>
                       </div>
